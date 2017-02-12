@@ -3,12 +3,10 @@
   "version": "0.0.1",
   "description": "A site for creating and entering shortlived chat rooms",
   "main": "index.js",
-  
   "scripts": {
     "cover": "istanbul cover node_modules/jasmine-node/bin/jasmine-node -- ./spec",
     "test": "jasmine-node --verbose --captureExceptions --forceexit ./spec"
   },
-  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Thomas-Elder/hobby.node.happening.git"
@@ -18,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/Thomas-Elder/hobby.node.happening/issues"
   },
-  "homepage": "https://github.com/Thomas-Elder/hobby.node.happening#readme"
+  "homepage": "https://github.com/Thomas-Elder/hobby.node.happening#readme",
+  
+  "devDependencies": {
+    "istanbul": "^0.4.5",
+    "jasmine-node": "^1.14.5"
+  }
 }
