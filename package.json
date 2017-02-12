@@ -1,0 +1,19 @@
+{
+  "name": "happening",
+  "version": "0.0.1",
+  "description": "A site for creating and entering shortlived chat rooms",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Thomas-Elder/hobby.node.happening.git"
+  },
+  "author": "thombsaway",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Thomas-Elder/hobby.node.happening/issues"
+  },
+  "homepage": "https://github.com/Thomas-Elder/hobby.node.happening#readme"
+}
