@@ -2,7 +2,7 @@
   "name": "happening",
   "version": "0.0.1",
   "description": "A site for creating and entering shortlived chat rooms",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "cover": "istanbul cover node_modules/jasmine-node/bin/jasmine-node -- ./spec",
     "test": "jasmine-node --verbose --captureExceptions --forceexit ./spec"
@@ -17,9 +17,13 @@
     "url": "https://github.com/Thomas-Elder/hobby.node.happening/issues"
   },
   "homepage": "https://github.com/Thomas-Elder/hobby.node.happening#readme",
-  
   "devDependencies": {
     "istanbul": "^0.4.5",
-    "jasmine-node": "^1.14.5"
+    "jasmine-node": "^1.14.5",
+    "request": "^2.79.0"
+  },
+  "dependencies": {
+    "express": "^4.14.1",
+    "pug": "^2.0.0-beta11"
   }
 }
