@@ -22,7 +22,7 @@ var Server = function(){
     res.render('none', {title: "N O T H I N G T O S E E H E R E"})
   });
 
-  app.use(express.static(path.join(__dirname, './client')));
+  app.use('/static', express.static(path.join(__dirname, '../client')));
 };
 
 Server.prototype.start = function() {
