@@ -21,7 +21,7 @@ describe('Server', function(){
     done();
   });
     
-  describe('connection tests', function(){
+  describe('connection', function(){
       
     it('should return OK statusCode to a request for "/"', function(done){
         
@@ -51,6 +51,25 @@ describe('Server', function(){
           
           expect(res.statusCode).toBe(200);
           done();
+      });
+    });   
+  });  
+
+  describe('resources', function(){
+      
+    it('should return OK statusCode to a request for "/static/style.css"', function(done){
+        
+      request.get(
+      {
+        'url':url + "/"
+      },
+      function(err, res){
+
+        if(res === undefined)
+          throw new Error(err);
+        
+        expect(res.statusCode).toBe(200);
+        done();
       });
     });   
   });  

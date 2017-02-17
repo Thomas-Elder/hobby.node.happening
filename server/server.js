@@ -14,6 +14,8 @@ var Server = function(){
   app.set('views', path.join(__dirname, './views'));
   app.set('view engine', 'pug');
 
+  app.use('/static', express.static(path.join(__dirname, '../client')));
+  
   app.get('/', function(req, res){
     res.render('index', {title: "H A P P E N I N G"})
   });
@@ -21,8 +23,6 @@ var Server = function(){
   app.get('*', function(req, res){
     res.render('none', {title: "N O T H I N G T O S E E H E R E"})
   });
-
-  app.use('/static', express.static(path.join(__dirname, '../client')));
 };
 
 Server.prototype.start = function() {
