@@ -20,10 +20,12 @@
   "devDependencies": {
     "istanbul": "^0.4.5",
     "jasmine-node": "^1.14.5",
-    "request": "^2.79.0"
+    "request": "^2.79.0",
+    "socket.io-client": "^1.7.3"
   },
   "dependencies": {
     "express": "^4.14.1",
-    "pug": "^2.0.0-beta11"
+    "pug": "^2.0.0-beta11",
+    "socket.io": "^1.7.3"
   }
 }

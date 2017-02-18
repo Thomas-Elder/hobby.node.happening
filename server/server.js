@@ -1,13 +1,14 @@
 
-var http = require('http');
 var express = require('express');
-var app, server;
+var app = express();
+
+var server = require('http').createServer(app);
 
 var path = require('path');
 
+var events = require('./events')(server);
+
 var Server = function(){
-  app = express();
-  server = http.createServer(app);
 
   app.set('port', 8888);
 
