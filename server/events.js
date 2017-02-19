@@ -3,9 +3,13 @@ var events = function(server) {
   io = require('socket.io')(server);
 
   io.on('connection', function(socket){
-    console.log('user connected.');
+    console.log('user connected...');
 
-    socket.emit('connected', {msg:'connection successful.'});
+    io.emit('connect');
+
+    socket.on('disconnect', function(){
+      console.log('user disconnected');
+    });
   });
 };
 

@@ -1,8 +1,10 @@
-var request = require('request');
-var io_client = require('socket.io-client');
 var Server = require('../../server/server');
 
-describe('Events', function(){
+var io_client = require('socket.io-client');
+
+describe('Single events', function(){
+
+  var server;
 
   var url = 'http://localhost:8888/';
   var socketOptions = {
@@ -10,10 +12,8 @@ describe('Events', function(){
         'reopen delay' : 0, 
         'force new connection' : true
       };
+  var client;
 
-  var client_emit;
-  var client_rcv;
-  
   server = new Server();
   console.log('Starting the server...');
   server.start();
@@ -21,36 +21,48 @@ describe('Events', function(){
   beforeEach(function(done){
 
     // Connect a client socket to the server
-    client_emit = io_client(url, socketOptions);
-
-    // Connect a separate client socket to the server
-    client_rcv = io_client(url, socketOptions);
+    client = io_client(url, socketOptions);
 
     // Log connection
-    client_emit.on('connect', function(){
-      console.log('socket_emit connected.');
+    client.on('connect',
+      function(){
+        console.log('client connected.');
+        done();
     });
 
-    client_rcv.on('connect', function(){
-      console.log('client_rcv connected.');
+    // Log connection error
+    client.on('connect_error', function(err){
+      console.log('client not connected, there was an error.', err);
       done();
     });
   });
   
   afterEach(function(done){
-      
-    // Disconnect both sockets
-    client_emit.disconnect(0);
-    client_rcv.disconnect(0);
-
+    client.disconnect(true);
     done();
   });
 
-  it('should respond with a "connected" event on connection', function(done){
+  describe('connection', function(){
 
-    client_emit.on('connected', function(msg){
-      expect(true).toEqual(true);
-      done();
+    it('should emit "connect" event to this client on connection', function(done){           
+      client.on('connect', function(){
+        expect(true).toEqual(true);
+        done();
+      });
+
+      // Disconnect and reconnect the client to fire event.
+      client.disconnect();
+      client.connect(url, socketOptions); 
+    });
+
+    it('should emit "disconnect" event to this client on connection', function(done){           
+      client.on('disconnect', function(){
+        expect(true).toEqual(true);
+        done();
+      });
+
+      // Disconnect the client to fire event.
+      client.disconnect();
     });
   });
 });
