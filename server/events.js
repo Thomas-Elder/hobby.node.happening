@@ -9,6 +9,7 @@ var events = function(server) {
 
     socket.on('disconnect', function(){
       console.log('user disconnected');
+      io.emit('disconnect');
     });
   });
 };
