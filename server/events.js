@@ -10,6 +10,10 @@ var events = function(server) {
     socket.on('disconnect', function(){
       io.emit('user-disconnected');
     });
+
+    socket.on('new-message', function(msg){
+      io.emit('new-message', msg);
+    });
   });
 };
 

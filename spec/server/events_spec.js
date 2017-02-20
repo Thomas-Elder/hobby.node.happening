@@ -38,8 +38,7 @@ describe('Single events', function(){
     // Log connection error
     client_a.on('connect_error', function(err){
       console.log('client_a not connected, there was an error.', err);
-      
-      // Log connection error
+
       client_b.on('connect_error', function(err){
         console.log('client_b not connected, there was an error.', err);
         done();
@@ -95,6 +94,18 @@ describe('Single events', function(){
 
       // Disconnect the client_a to fire event.
       client_a.disconnect();
+    });
+  });
+
+  describe('chat', function(){
+
+    it('should send a "new-message" event when a "new-message" event is received', function(done){
+      client_a.on('new-message', function(msg){
+        expect(msg).toEqual("A new message has been received!");
+        done();
+      });
+
+      client_b.emit('new-message', "A new message has been received!");
     });
   });
 });
