@@ -76,19 +76,19 @@ describe('Single events', function(){
       client_a.disconnect();
     });
 
-    it('should emit "connect" event to other clients on connection', function(done){           
-      client_b.on('connect', function(){
+    it('should emit "user-connected" event to other clients on connection', function(done){    
+      client_b.on('user-connected', function(){
         expect(true).toEqual(true);
         done();
       });
 
       // Disconnect and reconnect the client_a to fire event.
       client_a.disconnect();
-      client_a.connect(url, socketOptions); 
+      client_a.connect(url, socketOptions);      
     });
 
-    it('should emit "disconnect" event to other clients on disconnection', function(done){           
-      client_b.on('disconnect', function(){
+    it('should emit "user-disconnected" event to other clients on disconnection', function(done){           
+      client_b.on('user-disconnected', function(){
         expect(true).toEqual(true);
         done();
       });

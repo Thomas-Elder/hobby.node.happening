@@ -5,11 +5,10 @@ var events = function(server) {
   io.on('connection', function(socket){
     console.log('user connected...');
 
-    io.emit('connect');
+    io.emit('user-connected');
 
     socket.on('disconnect', function(){
-      console.log('user disconnected');
-      io.emit('disconnect');
+      io.emit('user-disconnected');
     });
   });
 };
