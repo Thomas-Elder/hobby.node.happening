@@ -2,7 +2,7 @@ var Server = require('../../server/server');
 
 var io_client = require('socket.io-client');
 
-describe('Single events', function(){
+describe('Events', function(){
 
   var server;
 
