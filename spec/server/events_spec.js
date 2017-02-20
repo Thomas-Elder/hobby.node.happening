@@ -99,7 +99,16 @@ describe('Events', function(){
 
   describe('chat', function(){
 
-    iit('should send a "new-message" event when a "new-message" event is received', function(done){
+    it('should send a "new-message" event when a "new-message" event is received', function(done){
+      client_a.on('new-message', function(msg){
+        expect(true).toEqual(true);
+        done();
+      });
+
+      client_b.emit('new-message', "A new message has been received!");
+    });
+
+    it('should forward the message sent to the other client', function(done){
       client_a.on('new-message', function(msg){
         expect(msg).toEqual("A new message has been received!");
         done();
