@@ -39,7 +39,7 @@ describe('Server', function(){
       });
     });
 
-    it('should return OK statusCode to a request for "/gibberish"', function(done){
+    it('should return 404 to a request for "/gibberish"', function(done){
       request.get(
         {
           'url':url + "/gibberish"
@@ -49,7 +49,7 @@ describe('Server', function(){
           if(res === undefined)
             throw new Error(err);
           
-          expect(res.statusCode).toBe(200);
+          expect(res.statusCode).toBe(404);
           done();
       });
     });   
@@ -61,7 +61,7 @@ describe('Server', function(){
         
       request.get(
       {
-        'url':url + "/"
+        'url':url + "/static/style.css"
       },
       function(err, res){
 
@@ -71,6 +71,22 @@ describe('Server', function(){
         expect(res.statusCode).toBe(200);
         done();
       });
-    });   
+    });
+
+    it('should return OK statusCode to a request for "/static/main.js"', function(done){
+        
+      request.get(
+      {
+        'url':url + "/static/main.js"
+      },
+      function(err, res){
+
+        if(res === undefined)
+          throw new Error(err);
+        
+        expect(res.statusCode).toBe(200);
+        done();
+      });
+    }); 
   });  
 });

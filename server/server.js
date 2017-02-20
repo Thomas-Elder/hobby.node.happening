@@ -21,9 +21,9 @@ var Server = function(){
     res.render('index', {title: "H A P P E N I N G"})
   });
 
-  app.get('*', function(req, res){
+  /*app.get('*', function(req, res){
     res.render('none', {title: "N O T H I N G T O S E E H E R E"})
-  });
+  });*/
 };
 
 Server.prototype.start = function() {
