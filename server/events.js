@@ -14,7 +14,7 @@ var events = function(server) {
     });
 
     socket.on('new-message', function(msg){
-      console.log('message received...');
+      console.log('message received...', msg);
 
       io.emit('new-message', msg);
     });

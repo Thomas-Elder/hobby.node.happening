@@ -99,7 +99,7 @@ describe('Events', function(){
 
   describe('chat', function(){
 
-    it('should send a "new-message" event when a "new-message" event is received', function(done){
+    iit('should send a "new-message" event when a "new-message" event is received', function(done){
       client_a.on('new-message', function(msg){
         expect(msg).toEqual("A new message has been received!");
         done();

@@ -14,13 +14,14 @@ window.onload = function(){
   });
 
   socket.on('new-message', function(msg){
+    console.log(msg);
     $('#chat').append('<li>' + msg + '</li>');
   });
 
   $('#send').click(function(){
 
-    var msg = $('message').val();
-
+    var msg = $('#message').val();
+    console.log(msg);
     socket.emit('new-message', msg);
   });
 };
