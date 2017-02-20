@@ -1,22 +1,26 @@
 window.onload = function(){
   var socket = io();
 
-  io.on('user-connected', function(){
+  socket.on('user-connected', function(){
 
     console.log('new user joined');
     $('#chat').append('<li>A new user has joined</li>');
   });
 
-  io.on('user-disconnected', function(){
+  socket.on('user-disconnected', function(){
 
     console.log('user left');
     $('#chat').append('<li>A user has left</li>');
+  });
+
+  socket.on('new-message', function(msg){
+    $('#chat').append('<li>' + msg + '</li>');
   });
 
   $('#send').click(function(){
 
     var msg = $('message').val();
 
-    io.emit('new-message', msg);
+    socket.emit('new-message', msg);
   });
 };
