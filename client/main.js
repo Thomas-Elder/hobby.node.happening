@@ -11,6 +11,8 @@ window.onload = function(){
 
     $('#login-section').hide();
     $('#chat-section').show();
+
+    socket.emit('login', name);
   });
   
   $('#send').click(function(){
