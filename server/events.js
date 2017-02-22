@@ -18,6 +18,12 @@ var events = function(server) {
 
       io.emit('new-message', msg);
     });
+
+    socket.on('login', function(user){
+      console.log('new login received...', user);
+
+      socket.broadcast.emit('new-login', user);
+    });
   });
 };
 

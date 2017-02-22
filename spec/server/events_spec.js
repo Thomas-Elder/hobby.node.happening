@@ -99,6 +99,24 @@ describe('Events', function(){
 
   describe('chat', function(){
 
+    it('should send a "new-login" event when a "login" event is received', function(done){
+      client_a.on('new-login', function(user){
+        expect(true).toEqual(true);
+        done();
+      });
+
+      client_b.emit('login', 'Tom');
+    });
+
+    it('should the user details to other users when a "login" event is received', function(done){
+      client_a.on('new-login', function(user){
+        expect(user).toEqual('Tom');
+        done();
+      });
+
+      client_b.emit('login', 'Tom');
+    });
+
     it('should send a "new-message" event when a "new-message" event is received', function(done){
       client_a.on('new-message', function(msg){
         expect(true).toEqual(true);
