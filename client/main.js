@@ -30,4 +30,8 @@ window.onload = function(){
   socket.on('new-message', function(msg){
     $('#chat').append('<li>' + msg + '</li>');
   });
+
+  socket.on('new-login', function(user){
+    $('#chat').append('<li>User: ' + user + ' has joined the chat.</li>');
+  });
 };
