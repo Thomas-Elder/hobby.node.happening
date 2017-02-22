@@ -100,39 +100,53 @@ describe('Events', function(){
   describe('chat', function(){
 
     it('should send a "new-login" event when a "login" event is received', function(done){
-      client_a.on('new-login', function(user){
+      client_a.on('new-login', function(expected){
         expect(true).toEqual(true);
         done();
       });
 
-      client_b.emit('login', 'Tom');
+      var expected = {};
+      expected.name = 'Tom';
+
+      client_b.emit('login', expected);
     });
 
     it('should the user details to other users when a "login" event is received', function(done){
-      client_a.on('new-login', function(user){
-        expect(user).toEqual('Tom');
+      client_a.on('new-login', function(data){
+        expect(data).toEqual(expected);
         done();
       });
 
-      client_b.emit('login', 'Tom');
+      var expected = {};
+      expected.name = 'Tom';
+
+      client_b.emit('login', expected);
     });
 
     it('should send a "new-message" event when a "new-message" event is received', function(done){
-      client_a.on('new-message', function(msg){
+      client_a.on('new-message', function(data){
         expect(true).toEqual(true);
         done();
       });
 
-      client_b.emit('new-message', "A new message has been received!");
+      var expected = {};
+      expected.name = 'Tom';
+      expected.msg = 'Blah de blah';
+
+      client_b.emit('new-message', expected);
     });
 
     it('should forward the message sent to the other client', function(done){
-      client_a.on('new-message', function(msg){
-        expect(msg).toEqual("A new message has been received!");
+      client_a.on('new-message', function(data){
+        expect(data).toEqual(expected);
         done();
       });
 
-      client_b.emit('new-message', "A new message has been received!");
+      var expected = {};
+      expected.name = 'Tom';
+      expected.msg = 'Blah de blah';
+
+      client_b.emit('new-message', expected);
     });
   });
 });
