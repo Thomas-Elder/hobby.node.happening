@@ -97,6 +97,39 @@ describe('Events', function(){
     });
   });
 
+  describe('rooms', function(){
+
+    it('should emit a "new-room" event when an "open" event is received', function(done){
+      client_a.on('new-room', function(expected){
+        expect(true).toEqual(true);
+        done();
+      });
+
+      var data = {};
+      data.name = 'Tom';
+
+      client_b.emit('open', data);
+    });
+
+    it('should pass the room details on to other users when an "open" event is received', function(done){
+      client_a.on('new-room', function(data){
+        expect(data).toEqual(expected);
+        done();
+      });
+
+      var expected = {};
+      expected.name = 'Tom';
+      expected.room = {};
+      expected.room.id = client_b.id;
+      expected.users = [client_b.id];
+
+      var data = {};
+      data.name = 'Tom';
+
+      client_b.emit('open', data);
+    });
+  });
+
   describe('chat', function(){
 
     it('should send a "new-login" event when a "login" event is received', function(done){
@@ -111,7 +144,7 @@ describe('Events', function(){
       client_b.emit('login', expected);
     });
 
-    it('should the user details to other users when a "login" event is received', function(done){
+    it('should pass the user details to other users when a "login" event is received', function(done){
       client_a.on('new-login', function(data){
         expect(data).toEqual(expected);
         done();
