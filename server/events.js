@@ -25,16 +25,20 @@ var events = function(server) {
       socket.broadcast.emit('new-login', user);
     });
 
-    socket.on('open', function(data){
-      console.log('new room created: ', data);
-      data.room = {};
-      data.room.id = socket.id;
-      data.users = [];
-      data.users.push(socket.id);
+    socket.on('open', function(room){
+      console.log('new room created: ', room);
 
       socket.join(socket.id);
 
-      socket.broadcast.emit('new-room', data);
+      socket.broadcast.emit('new-room', room);
+    });
+
+    socket.on('join', function(room, user){
+      console.log('new room created: ', room, user);
+
+      socket.join(room.id);
+      room.users.push(user);
+      socket.broadcast.to(room.id).emit('user-joined', room);
     });
   });
 };
