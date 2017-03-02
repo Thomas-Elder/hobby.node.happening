@@ -204,11 +204,19 @@ describe('Events', function(){
       user.name = 'Tom';
       user.id = client_a.id;
 
+      var user_b = {};
+      user_b.name = 'Tim';
+      user_b.id = client_b.id;
+
       room.users.push(user);
+
+      var data = {};
+      data.room = room;
+      data.user = user_b;
 
       // Act
       client_a.emit('open', room);
-      client_b.emit('join', room);
+      client_b.emit('join', data);
     });
 
     it('should add a user to the room.users object when a "join" event is received', function(done){
@@ -241,9 +249,13 @@ describe('Events', function(){
 
       room.users.push(user_a);
 
+      var data = {};
+      data.room = room;
+      data.user = user_b;
+
       // Act
       client_a.emit('open', room);
-      client_b.emit('join', room, user_b);
+      client_b.emit('join', data);
 
     });
   });
@@ -281,6 +293,10 @@ describe('Events', function(){
 
       room.users.push(user_a);
 
+      var data = {};
+      data.room = room;
+      data.user = user_b;
+
       var message = {};
       message.room = room;
       message.sender = user_b;
@@ -288,7 +304,7 @@ describe('Events', function(){
 
       // Act
       client_a.emit('open', room);
-      client_b.emit('join', room, user_b);
+      client_b.emit('join', data);
 
       client_b.emit('new-message', message);
     });
@@ -328,6 +344,10 @@ describe('Events', function(){
 
       room.users.push(user_a);
 
+      var data = {};
+      data.room = room;
+      data.user = user_b;
+
       var message = {};
       message.room = room;
       message.room.users.push({name: 'Tim', id: client_b.id});
@@ -336,7 +356,7 @@ describe('Events', function(){
 
       // Act
       client_a.emit('open', room);
-      client_b.emit('join', room, user_b);
+      client_b.emit('join', data);
 
       client_b.emit('new-message', message);
 

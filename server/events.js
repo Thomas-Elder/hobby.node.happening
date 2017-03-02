@@ -33,12 +33,12 @@ var events = function(server) {
       socket.broadcast.emit('new-room', room);
     });
 
-    socket.on('join', function(room, user){
-      console.log('new room created: ', room, user);
+    socket.on('join', function(data){
+      console.log('joining room: ', data);
 
-      socket.join(room.id);
-      room.users.push(user);
-      socket.broadcast.to(room.id).emit('user-joined', room);
+      socket.join(data.room.id);
+      data.room.users.push(data.user);
+      socket.broadcast.to(data.room.id).emit('user-joined', data.room);
     });
   });
 };
