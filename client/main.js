@@ -4,6 +4,7 @@ window.onload = function(){
   var name = "";
 
   $('#login-section').show();
+  $('#browse-section').hide();
   $('#chat-section').hide();
   
   $('#login').click(function(){
@@ -12,11 +13,29 @@ window.onload = function(){
     data.name = name;
 
     $('#login-section').hide();
-    $('#chat-section').show();
+    $('#browse-section').show();
 
     socket.emit('login', data);
   });
   
+  $('#open').click(function(){
+
+    $('#browse-section').hide();
+    $('#chat-section').show();
+
+    socket.emit('open');
+  });
+
+  $('#rooms').on('click', 'button', function(){
+
+    $('#browse-section').hide();
+    $('#chat-section').show();
+
+    var id = $(this).attr('id');
+
+    socket.emit('join', id);
+  });
+
   $('#send').click(function(){
     var data = {};
     data.name = name;
@@ -24,20 +43,25 @@ window.onload = function(){
 
     socket.emit('new-message', data);
   });
-  
-  socket.on('user-connected', function(){
-    $('#chat').append('<li>A new user has joined</li>');
+
+  socket.on('new-room', function(id){
+    $('#rooms').append('<li>' + id + '<button id ="' + id + '">J O I N </button><li>');
   });
 
-  socket.on('user-disconnected', function(){
-    $('#chat').append('<li>A user has left</li>');
+  socket.on('new-message', function(message){
+    $('#chat').append('<li>' + message.name + ":" + message.text + '</li>');
   });
 
-  socket.on('new-login', function(data){
-    $('#chat').append('<li>User: ' + data.name + ' has joined the chat.</li>');
-  });
 
-  socket.on('new-message', function(data){
-    $('#chat').append('<li>' + data.name + ":" + data.msg + '</li>');
-  });
+  /**
+   * These events are sent by the server, but I don't have a use for them at
+   * the moment.
+   */
+  socket.on('new-login', function(name){  });
+
+  socket.on('new-logout', function(name){  });
+
+  socket.on('user-connected', function(){  });
+
+  socket.on('user-disconnected', function(){  });
 };
