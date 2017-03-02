@@ -2,43 +2,63 @@
 var events = function(server) {
   io = require('socket.io')(server);
 
+  var users = [];
+
   io.on('connection', function(socket){
-    console.log('user connected...');
+    
+    users.push({id:socket.id});
 
     io.emit('user-connected');
 
     socket.on('disconnect', function(){
-      console.log('user disconnected...');
 
       io.emit('user-disconnected');
     });
 
-    socket.on('new-message', function(message){
-      console.log('message received for room:', message);
+    socket.on('login', function(name){
 
-      socket.broadcast.to(message.room.id).emit('new-message', message);
+      users.find(function(user){ return user.id === socket.id; }).name = name;
+      socket.broadcast.emit('new-login', name);
     });
 
-    socket.on('login', function(user){
-      console.log('new login received...', user);
+    socket.on('logout', function(){
 
-      socket.broadcast.emit('new-login', user);
+      var index = users.findIndex(function(user){ return user.id === socket.id; });
+      var name = users[index].name;
+
+      users.splice(index, 1);
+
+      socket.broadcast.emit('new-logout', name);
     });
 
-    socket.on('open', function(room){
-      console.log('new room created: ', room);
+    socket.on('open', function(){
+
+      users.find(function(user){ return user.id === socket.id; }).roomid = socket.id;
 
       socket.join(socket.id);
-
-      socket.broadcast.emit('new-room', room);
+      socket.broadcast.emit('new-room', socket.id);
     });
 
-    socket.on('join', function(data){
-      console.log('joining room: ', data);
+    socket.on('join', function(id){
 
-      socket.join(data.room.id);
-      data.room.users.push(data.user);
-      socket.broadcast.to(data.room.id).emit('user-joined', data.room);
+      var index = users.findIndex(function(user){ return user.id === socket.id; });
+      var name = users[index].name;
+      users[index].roomid = id;
+
+      socket.join(id);
+      socket.broadcast.to(id).emit('user-joined', name);
+    });
+  
+    socket.on('new-message', function(text){
+
+      var index = users.findIndex(function(user){ return user.id === socket.id; });
+      var id = users[index].roomid;
+
+      var message = {};
+      message.name = users[index].name;
+      message.text = text;
+
+      socket.broadcast.to(id).emit('new-message', message);
     });
   });
 };
