@@ -172,73 +172,122 @@ describe('Events', function(){
 
   describe('rooms', function(){
 
-    it('should emit a "new-room" event when an "open" event is received', function(done){
-      
-      // Assert
-      client_a.on('new-room', function(expected){
-        expect(true).toEqual(true);
-        done();
+    describe('new', function(){
+
+      it('should emit a "new-room" event when an "open" event is received', function(done){
+        
+        // Assert
+        client_a.on('new-room', function(expected){
+          expect(true).toEqual(true);
+          done();
+        });
+
+        // Act
+        client_b.emit('open');
       });
 
-      // Act
-      client_b.emit('open');
+      it('should pass the room id on to other users when an "open" event is received', function(done){
+        
+        // Assert
+        client_a.on('new-room', function(room){
+          expect(room).toEqual(expected);
+          done();
+        });
+
+        // Arrange
+        var expected = client_b.id;
+
+        // Act
+        client_b.emit('open');
+      });
     });
 
-    it('should pass the room id on to other users when an "open" event is received', function(done){
-      
-      // Assert
-      client_a.on('new-room', function(room){
-        expect(room).toEqual(expected);
-        done();
+    describe('join', function(){
+
+      it('should emit a "user-joined" event when a "join" event is received', function(done){
+        
+        // Assert
+        client_a.on('user-joined', function(){
+          expect(true).toEqual(true);
+          done();
+        });
+        
+        // Arrange
+        var expected = 'Tom';
+
+        // Act
+        client_a.emit('login', 'Tom');
+        client_b.emit('login', 'Tim');
+
+        client_a.emit('open');
+        client_b.emit('join', client_a.id);
       });
 
-      // Arrange
-      var expected = client_b.id;
+      it('should pass the new users name on to other clients in the room when a "join" event is received', function(done){
+        
+        // Assert
+        client_a.on('user-joined', function(name){
+          expect(name).toEqual(expected);
+          done();
+        });
 
-      // Act
-      client_b.emit('open');
-    });
+        // Arrange
+        var expected = 'Tim';
 
-    it('should emit a "user-joined" event when a "join" event is received', function(done){
-      
-      // Assert
-      client_a.on('user-joined', function(){
-        expect(true).toEqual(true);
-        done();
+        // Act
+        client_a.emit('login', 'Tom');
+        client_b.emit('login', 'Tim');
+        
+        client_a.emit('open');
+        client_b.emit('join', client_a.id);
+
       });
-      
-      // Arrange
-      var expected = 'Tom';
+    }); 
 
-      // Act
-      client_a.emit('login', 'Tom');
-      client_b.emit('login', 'Tim');
+    describe('bail', function(){
 
-      client_a.emit('open');
-      client_b.emit('join', client_a.id);
-    });
+      it('should emit a "user-bailed" event when a "bail" event is received', function(done){
+        
+        // Assert
+        client_a.on('user-bailed', function(name){
+          expect(true).toEqual(true);
+          done();
+        });
+        
+        // Arrange
+        var expected = 'Tim';
 
-    it('should pass the new users name on to other clients in the room when a "join" event is received', function(done){
-      
-      // Assert
-      client_a.on('user-joined', function(name){
-        expect(name).toEqual(expected);
-        done();
+        // Act
+        client_a.emit('login', 'Tom');
+        client_b.emit('login', 'Tim');
+
+        client_a.emit('open');
+        client_b.emit('join', client_a.id);
+        client_b.emit('bail');
       });
 
-      // Arrange
-      var expected = 'Tim';
+      it('should pass the bailing users name on to other clients in the room when a "bail" event is received', function(done){
+        
+        // Assert
+        client_a.on('user-bailed', function(name){
+          expect(name).toEqual(expected);
+          done();
+        });
+        
+        // Arrange
+        var expected = 'Tim';
 
-      // Act
-      client_a.emit('login', 'Tom');
-      client_b.emit('login', 'Tim');
-      
-      client_a.emit('open');
-      client_b.emit('join', client_a.id);
+        // Act
+        client_a.emit('login', 'Tom');
+        client_b.emit('login', 'Tim');
 
-    });
+        client_a.emit('open');
+        client_b.emit('join', client_a.id);
+        client_b.emit('bail');
+      });
+    }); 
   });
-
+  
   describe('chat', function(){
 
     it('should send a "new-message" event when a "new-message" event is received', function(done){

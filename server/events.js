@@ -48,6 +48,18 @@ var events = function(server) {
       socket.join(id);
       socket.broadcast.to(id).emit('user-joined', name);
     });
+
+    socket.on('bail', function(){
+
+      var index = users.findIndex(function(user){ return user.id === socket.id; });
+      var name = users[index].name;
+      id = users[index].roomid;
+
+      delete users[index].roomid;
+
+      socket.leave(id);
+      socket.broadcast.to(id).emit('user-bailed', name);
+    });
   
     socket.on('new-message', function(text){
 
