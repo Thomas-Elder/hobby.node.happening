@@ -13,10 +13,10 @@ var events = function(server) {
       io.emit('user-disconnected');
     });
 
-    socket.on('new-message', function(data){
-      console.log('message received...', data);
+    socket.on('new-message', function(message){
+      console.log('message received for room:', message);
 
-      io.emit('new-message', data);
+      socket.broadcast.to(message.room.id).emit('new-message', message);
     });
 
     socket.on('login', function(user){

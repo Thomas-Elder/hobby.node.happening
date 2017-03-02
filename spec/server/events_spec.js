@@ -253,35 +253,93 @@ describe('Events', function(){
     it('should send a "new-message" event when a "new-message" event is received', function(done){
 
       // Assert
-      client_a.on('new-message', function(data){
+      client_a.on('new-message', function(message){
         expect(true).toEqual(true);
         done();
       });
 
       // Arrange
       var expected = {};
-      expected.name = 'Tom';
-      expected.msg = 'Blah de blah';
+      expected.sender = user_b;
+      expected.users = [];
+      expected.id = client_a.id;
+
+      expected.users.push({name: 'Tom', id: client_a.id});
+      expected.users.push({name: 'Tim', id: client_b.id});
+
+      var room = {};
+      room.users = [];
+      room.id = client_a.id;
+
+      var user_a = {};
+      user_a.name = 'Tom';
+      user_a.id = client_a.id;
+
+      var user_b = {};
+      user_b.name = 'Tim';
+      user_b.id = client_b.id;
+
+      room.users.push(user_a);
+
+      var message = {};
+      message.room = room;
+      message.sender = user_b;
+      message.text = 'Blah de blah';
 
       // Act
-      client_b.emit('new-message', expected);
+      client_a.emit('open', room);
+      client_b.emit('join', room, user_b);
+
+      client_b.emit('new-message', message);
     });
 
     it('should forward the message sent to the other client', function(done){
 
       // Assert
-      client_a.on('new-message', function(data){
-        expect(data).toEqual(expected);
+      client_a.on('new-message', function(message){
+        expect(message).toEqual(expected);
         done();
       });
 
       // Arrange
       var expected = {};
-      expected.name = 'Tom';
-      expected.msg = 'Blah de blah';
+      
+      expected.room = {};
+      expected.room.users = [];
+
+      expected.room.id = client_a.id;
+      expected.room.users.push({name: 'Tom', id: client_a.id});
+      expected.room.users.push({name: 'Tim', id: client_b.id});
+
+      expected.sender = {name: 'Tim', id: client_b.id};
+      expected.text = 'Blah de blah';
+
+      var room = {};
+      room.users = [];
+      room.id = client_a.id;
+
+      var user_a = {};
+      user_a.name = 'Tom';
+      user_a.id = client_a.id;
+
+      var user_b = {};
+      user_b.name = 'Tim';
+      user_b.id = client_b.id;
+
+      room.users.push(user_a);
+
+      var message = {};
+      message.room = room;
+      message.room.users.push({name: 'Tim', id: client_b.id});
+      message.sender = user_b;
+      message.text = 'Blah de blah';
 
       // Act
-      client_b.emit('new-message', expected);
+      client_a.emit('open', room);
+      client_b.emit('join', room, user_b);
+
+      client_b.emit('new-message', message);
+
     });
   });
 });
