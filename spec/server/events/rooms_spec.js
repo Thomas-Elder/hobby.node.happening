@@ -24,7 +24,6 @@ describe('rooms', function(){
     client_a = io_client(url, socketOptions);
     client_b = io_client(url, socketOptions);
 
-    // Log connection
     client_a.on('connect', function(){
         
         client_b.on('connect', function(){
@@ -35,11 +34,12 @@ describe('rooms', function(){
     // Log connection error
     client_a.on('connect_error', function(err){
       console.log('client_a not connected, there was an error.', err);
+      done();
+    });
 
-      client_b.on('connect_error', function(err){
-        console.log('client_b not connected, there was an error.', err);
-        done();
-      });
+    client_b.on('connect_error', function(err){
+      console.log('client_b not connected, there was an error.', err);
+      done();
     });
   });
   
