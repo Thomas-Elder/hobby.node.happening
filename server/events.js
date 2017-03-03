@@ -55,10 +55,29 @@ var events = function(server) {
       var name = users[index].name;
       id = users[index].roomid;
 
-      delete users[index].roomid;
+      // If the room id is this socket's id (ie this socket is the host)
+      if(users[index].id === id) {
 
-      socket.leave(id);
-      socket.broadcast.to(id).emit('user-bailed', name);
+        // Then for each current user 
+        for(var user in users) {
+
+          // If their roomid equals this id (ie they are in this room)
+          if (user.roomid === id) {
+
+            // Disconnect them from the socket, and delete their roomid property
+            io.sockets.sockets[user.id].disconnect();
+            delete user.roomid;
+          }
+        }
+
+        // Then let everyone know this room is closed.
+        socket.broadcast.to(id).emit('room-closed');
+      } else {
+
+        socket.leave(id);
+        delete users[index].roomid; 
+        socket.broadcast.to(id).emit('user-bailed', name);
+      }
     });
   
     socket.on('new-message', function(text){

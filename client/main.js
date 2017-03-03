@@ -40,7 +40,7 @@ window.onload = function(){
     text = $('#message').val();
 
     $('#chat').append('<li>' + name + ":" + text + '</li>');
-    
+
     socket.emit('new-message', text);
   });
 
@@ -54,6 +54,10 @@ window.onload = function(){
 
   socket.on('new-room', function(id){
     $('#rooms').append('<li>' + id + '<button id ="' + id + '">J O I N </button><li>');
+  });
+
+  socket.on('room-closed', function(id){
+    // todo
   });
 
   socket.on('new-message', function(message){
