@@ -77,6 +77,40 @@ describe('rooms', function(){
       // Act
       client_b.emit('open');
     });
+
+    it('should keep track of the new room when an "open" event is received', function(done){
+      
+      // Assert
+      client_a.on('new-room', function(room, rooms){
+        expect(rooms).toEqual(expected);
+        done();
+      });
+
+      // Arrange
+      var expected = [client_b.id];
+
+      // Act
+      client_b.emit('open');
+    });
+
+    it('should keep track of the new rooms when a second "open" event is received', function(done){
+      
+      // Assert
+      client_b.on('new-room', function(room, rooms){
+        console.log(expected);
+        expect(rooms).toEqual(expected);
+        done();
+      });
+
+      // Arrange
+      var expected = [client_b.id, client_a.id].sort();
+
+      // Act
+      client_b.emit('open');
+      client_a.on('new-room', function(){
+        client_a.emit('open');
+      });
+    });
   });
 
   describe('join', function(){

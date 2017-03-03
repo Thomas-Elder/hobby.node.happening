@@ -1,4 +1,6 @@
 
+var includes = require('thombsaway-includes');
+
 var events = function(server) {
   io = require('socket.io')(server);
 
@@ -11,6 +13,11 @@ var events = function(server) {
     io.emit('user-connected');
 
     socket.on('disconnect', function(){
+
+      var index = users.findIndex(function(user){ return user.id === socket.id; });
+      delete users[index];
+
+      users = users.filter(function(user){ if(user != undefined) { return user; }});
 
       io.emit('user-disconnected');
     });
@@ -26,8 +33,6 @@ var events = function(server) {
       var index = users.findIndex(function(user){ return user.id === socket.id; });
       var name = users[index].name;
 
-      users.splice(index, 1);
-
       socket.broadcast.emit('new-logout', name);
     });
 
@@ -35,8 +40,13 @@ var events = function(server) {
 
       users.find(function(user){ return user.id === socket.id; }).roomid = socket.id;
 
+      var rooms = users.map(function(user){ return user.roomid; });
+      rooms = includes.unique(rooms);
+      rooms = rooms.filter(function(room){ if (rooms != undefined) { return room; } })
+      rooms.sort();
+
       socket.join(socket.id);
-      socket.broadcast.emit('new-room', socket.id);
+      socket.broadcast.emit('new-room', socket.id, rooms);
     });
 
     socket.on('join', function(id){

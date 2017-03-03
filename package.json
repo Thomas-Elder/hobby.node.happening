@@ -26,6 +26,7 @@
   "dependencies": {
     "express": "^4.14.1",
     "pug": "^2.0.0-beta11",
-    "socket.io": "^1.7.3"
+    "socket.io": "^1.7.3",
+    "thombsaway-includes": "^1.0.0"
   }
 }

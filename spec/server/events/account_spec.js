@@ -117,5 +117,4 @@ describe('account', function(){
       client_b.emit('logout');
     });
   });
-
 });
