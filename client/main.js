@@ -8,14 +8,13 @@ window.onload = function(){
   $('#chat-section').hide();
   
   $('#login').click(function(){
-    var data = {};
+
     name = $('#name').val();
-    data.name = name;
 
     $('#login-section').hide();
     $('#browse-section').show();
 
-    socket.emit('login', data);
+    socket.emit('login', name);
   });
   
   $('#open').click(function(){
@@ -37,11 +36,20 @@ window.onload = function(){
   });
 
   $('#send').click(function(){
-    var data = {};
-    data.name = name;
-    data.msg = $('#message').val();
 
-    socket.emit('new-message', data);
+    text = $('#message').val();
+
+    $('#chat').append('<li>' + name + ":" + text + '</li>');
+    
+    socket.emit('new-message', text);
+  });
+
+  $('#bail').click(function(){
+
+    $('#browse-section').show();
+    $('#chat-section').hide();
+
+    socket.emit('bail');
   });
 
   socket.on('new-room', function(id){
