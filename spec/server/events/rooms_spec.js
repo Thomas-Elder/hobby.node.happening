@@ -209,6 +209,30 @@ describe('rooms', function(){
       }); 
     });
 
+    it('should maintain a list of the users in the room', function(done){
+      
+      // Assert
+      client_a.on('user-bailed', function(name, usersInRoom){
+        expect(usersInRoom).toEqual(expected);
+        done();
+      });
+
+      // Arrange
+      var expected = [{id: client_a.id, name:'Tom', roomid:client_a.id}];
+      expected.sort(function(a,b){return a.id > b.id});
+
+      // Act
+      client_a.emit('open');
+
+      client_b.on('new-room', function(room){
+        client_b.emit('join', room);
+
+        client_a.on('user-joined', function(){
+          client_b.emit('bail');
+        });
+      }); 
+    });
+
     it('should emit a "room-closed" event when the bailing user is the "host"', function(done){
       
       // Assert

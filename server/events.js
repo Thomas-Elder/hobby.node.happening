@@ -88,8 +88,12 @@ var events = function(server) {
       } else {
 
         socket.leave(id);
-        delete users[index].roomid; 
-        socket.broadcast.to(id).emit('user-bailed', name);
+        delete users[index].roomid;
+
+        var usersInRoom = users.filter(function(user){ return user.roomid === id });
+        usersInRoom.sort(function(a,b){return a.id > b.id});
+
+        socket.broadcast.to(id).emit('user-bailed', name, usersInRoom);
       }
     });
   
