@@ -55,8 +55,11 @@ var events = function(server) {
       var name = users[index].name;
       users[index].roomid = id;
 
+      var usersInRoom = users.filter(function(user){ return user.roomid === id });
+      usersInRoom.sort(function(a,b){return a.id > b.id});
+
       socket.join(id);
-      socket.broadcast.to(id).emit('user-joined', name);
+      socket.broadcast.to(id).emit('user-joined', name, usersInRoom);
     });
 
     socket.on('bail', function(){

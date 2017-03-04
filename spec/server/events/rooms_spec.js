@@ -117,7 +117,7 @@ describe('rooms', function(){
     it('should emit a "user-joined" event when a "join" event is received', function(done){
       
       // Assert
-      client_a.on('user-joined', function(){
+      client_a.on('user-joined', function(name, usersInRoom){
         expect(true).toEqual(true);
         done();
       });
@@ -136,7 +136,7 @@ describe('rooms', function(){
     it('should pass the new users name on to other clients in the room when a "join" event is received', function(done){
       
       // Assert
-      client_a.on('user-joined', function(name){
+      client_a.on('user-joined', function(name, usersInRoom){
         expect(name).toEqual(expected);
         done();
       });
@@ -151,6 +151,29 @@ describe('rooms', function(){
       client_a.emit('open');
       client_b.emit('join', client_a.id);
 
+    });
+
+    it('should maintain a list of the users in the room', function(done){
+      
+      // Assert
+      client_a.on('user-joined', function(name, usersInRoom){
+        expect(usersInRoom).toEqual(expected);
+        done();
+      });
+
+      // Arrange
+      var expected = [{id: client_b.id, name:'Tim', roomid:client_a.id}, {id: client_a.id, name:'Tom', roomid:client_a.id}];
+      expected.sort(function(a,b){return a.id > b.id});
+
+      // Act
+      client_a.emit('login', 'Tom');
+      client_b.emit('login', 'Tim');
+      
+      client_a.emit('open');
+
+      client_b.on('new-room', function(){
+        client_b.emit('join', client_a.id);
+      });
     });
   }); 
 
