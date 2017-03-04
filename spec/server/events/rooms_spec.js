@@ -1,3 +1,5 @@
+var async = require('async');
+
 var Server = require('../../../server/server');
 
 var io_client = require('socket.io-client');
@@ -24,22 +26,13 @@ describe('rooms', function(){
     client_a = io_client(url, socketOptions);
     client_b = io_client(url, socketOptions);
 
-    client_a.on('connect', function(){
-        
+    client_a.on('connect', function(){      
         client_b.on('connect', function(){
+
+          client_a.emit('login', 'Tom');
+          client_b.emit('login', 'Tim');
           done();
       });
-    });
-
-    // Log connection error
-    client_a.on('connect_error', function(err){
-      console.log('client_a not connected, there was an error.', err);
-      done();
-    });
-
-    client_b.on('connect_error', function(err){
-      console.log('client_b not connected, there was an error.', err);
-      done();
     });
   });
   
@@ -126,9 +119,6 @@ describe('rooms', function(){
       var expected = 'Tom';
 
       // Act
-      client_a.emit('login', 'Tom');
-      client_b.emit('login', 'Tim');
-
       client_a.emit('open');
       client_b.emit('join', client_a.id);
     });
@@ -145,9 +135,6 @@ describe('rooms', function(){
       var expected = 'Tim';
 
       // Act
-      client_a.emit('login', 'Tom');
-      client_b.emit('login', 'Tim');
-      
       client_a.emit('open');
       client_b.emit('join', client_a.id);
 
@@ -166,9 +153,6 @@ describe('rooms', function(){
       expected.sort(function(a,b){return a.id > b.id});
 
       // Act
-      client_a.emit('login', 'Tom');
-      client_b.emit('login', 'Tim');
-      
       client_a.emit('open');
 
       client_b.on('new-room', function(){
@@ -191,9 +175,6 @@ describe('rooms', function(){
       var expected = 'Tim';
 
       // Act
-      client_a.emit('login', 'Tom');
-      client_b.emit('login', 'Tim');
-
       client_a.emit('open');
 
       client_b.on('new-room', function(room){
@@ -217,9 +198,6 @@ describe('rooms', function(){
       var expected = 'Tim';
 
       // Act
-      client_a.emit('login', 'Tom');
-      client_b.emit('login', 'Tim');
-
       client_a.emit('open');
 
       client_b.on('new-room', function(room){
@@ -243,9 +221,6 @@ describe('rooms', function(){
       var expected = 'Tim';
 
       // Act
-      client_a.emit('login', 'Tom');
-      client_b.emit('login', 'Tim');
-
       client_b.emit('open');
 
       client_a.on('new-room', function(room){
