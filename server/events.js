@@ -77,14 +77,19 @@ var events = function(server) {
           // If their roomid equals this id (ie they are in this room)
           if (user.roomid === id) {
 
-            // Disconnect them from the socket, and delete their roomid property
-            io.sockets.sockets[user.id].disconnect();
+            // Delete their roomid property
+            //io.sockets.sockets[user.id].disconnect();
             delete user.roomid;
           }
         }
 
-        // Then let everyone know this room is closed.
-        socket.broadcast.to(id).emit('room-closed');
+        var rooms = users.map(function(user){ return user.roomid; });
+        rooms = includes.unique(rooms);
+        rooms = rooms.filter(function(room){ if (rooms != undefined) { return room; } })
+        rooms.sort();
+
+        // Then let everyone know this room is closed, and send updated list of rooms
+        socket.broadcast.to(id).emit('room-closed', rooms);
       } else {
 
         socket.leave(id);

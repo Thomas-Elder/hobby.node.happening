@@ -236,13 +236,36 @@ describe('rooms', function(){
     it('should emit a "room-closed" event when the bailing user is the "host"', function(done){
       
       // Assert
-      client_a.on('room-closed', function(){
+      client_a.on('room-closed', function(rooms){
         expect(true).toEqual(true);
         done();
       });
       
       // Arrange
       var expected = 'Tim';
+
+      // Act
+      client_b.emit('open');
+
+      client_a.on('new-room', function(room){
+        client_a.emit('join', room);
+
+        client_b.on('user-joined', function(){
+          client_b.emit('bail');
+        });
+      });      
+    });
+
+    it('should send a list of still open rooms when the bailing user is the "host"', function(done){
+      
+      // Assert
+      client_a.on('room-closed', function(rooms){
+        expect(expected).toEqual(rooms);
+        done();
+      });
+      
+      // Arrange
+      var expected = "??????";
 
       // Act
       client_b.emit('open');
