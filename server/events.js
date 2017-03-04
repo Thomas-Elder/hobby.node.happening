@@ -15,9 +15,9 @@ var events = function(server) {
     socket.on('disconnect', function(){
 
       var index = users.findIndex(function(user){ return user.id === socket.id; });
-      delete users[index];
+      users.splice(index, 1);
 
-      users = users.filter(function(user){ if(user != undefined) { return user; }});
+      //users = users.filter(function(user){ if(user != undefined) { return user; }});
 
       io.emit('user-disconnected');
     });

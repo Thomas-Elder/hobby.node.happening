@@ -97,7 +97,6 @@ describe('rooms', function(){
       
       // Assert
       client_b.on('new-room', function(room, rooms){
-        console.log(expected);
         expect(rooms).toEqual(expected);
         done();
       });
