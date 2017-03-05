@@ -5,113 +5,50 @@ var events = function(server) {
   io = require('socket.io')(server);
 
   var users = [];
+  var rooms = [];
 
   io.on('connection', function(socket){
     
-    users.push({id:socket.id});
-
+    if (!includes.includes(users, socket.id))
+      users.push({id:socket.id});
+ 
     io.emit('user-connected');
 
     socket.on('disconnect', function(){
-
-      var index = users.findIndex(function(user){ return user.id === socket.id; });
-      users.splice(index, 1);
-
-      //users = users.filter(function(user){ if(user != undefined) { return user; }});
 
       io.emit('user-disconnected');
     });
 
     socket.on('login', function(name){
 
-      users.find(function(user){ return user.id === socket.id; }).name = name;
       socket.broadcast.emit('new-login', name);
     });
 
     socket.on('logout', function(){
 
-      var index = users.findIndex(function(user){ return user.id === socket.id; });
-      var name = users[index].name;
-
-      socket.broadcast.emit('new-logout', name);
+      socket.broadcast.emit('new-logout');
     });
 
     socket.on('open', function(){
 
-      users.find(function(user){ return user.id === socket.id; }).roomid = socket.id;
-
-      var rooms = users.map(function(user){ return user.roomid; });
-      rooms = includes.unique(rooms);
-      rooms = rooms.filter(function(room){ if (rooms != undefined) { return room; } })
-      rooms.sort();
-
       socket.join(socket.id);
-      socket.broadcast.emit('new-room', socket.id, rooms);
+      socket.broadcast.emit('new-room', socket.id);
     });
 
     socket.on('join', function(id){
 
-      var index = users.findIndex(function(user){ return user.id === socket.id; });
-      var name = users[index].name;
-      users[index].roomid = id;
-
-      var usersInRoom = users.filter(function(user){ return user.roomid === id });
-      usersInRoom.sort(function(a,b){return a.id > b.id});
-
       socket.join(id);
-      socket.broadcast.to(id).emit('user-joined', name, usersInRoom);
+      socket.broadcast.to(id).emit('user-joined');
     });
 
     socket.on('bail', function(){
 
-      var index = users.findIndex(function(user){ return user.id === socket.id; });
-      var name = users[index].name;
-      id = users[index].roomid;
-
-      // If the room id is this socket's id (ie this socket is the host)
-      if(users[index].id === id) {
-
-        // Then for each current user 
-        for(var user in users) {
-
-          // If their roomid equals this id (ie they are in this room)
-          if (user.roomid === id) {
-
-            // Delete their roomid property
-            //io.sockets.sockets[user.id].disconnect();
-            delete user.roomid;
-          }
-        }
-
-        var rooms = users.map(function(user){ return user.roomid; });
-        rooms = includes.unique(rooms);
-        rooms = rooms.filter(function(room){ if (rooms != undefined) { return room; } })
-        rooms.sort();
-
-        // Then let everyone know this room is closed, and send updated list of rooms
-        socket.broadcast.to(id).emit('room-closed', rooms);
-      } else {
-
-        socket.leave(id);
-        delete users[index].roomid;
-
-        var usersInRoom = users.filter(function(user){ return user.roomid === id });
-        usersInRoom.sort(function(a,b){return a.id > b.id});
-
-        socket.broadcast.to(id).emit('user-bailed', name, usersInRoom);
-      }
+      //socket.broadcast.to(id).emit('user-bailed');
     });
   
     socket.on('new-message', function(text){
 
-      var index = users.findIndex(function(user){ return user.id === socket.id; });
-      var id = users[index].roomid;
-
-      var message = {};
-      message.name = users[index].name;
-      message.text = text;
-
-      socket.broadcast.to(id).emit('new-message', message);
+      //socket.broadcast.to(id).emit('new-message', text);
     });
   });
 };

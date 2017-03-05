@@ -25,12 +25,14 @@ describe('rooms', function(){
     // Connect a client socket to the server
     client_a = io_client(url, socketOptions);
     client_b = io_client(url, socketOptions);
+    client_c = io_client(url, socketOptions);
 
     client_a.on('connect', function(){      
         client_b.on('connect', function(){
 
           client_a.emit('login', 'Tom');
           client_b.emit('login', 'Tim');
+          //client_c.emit('login', 'Tum');
           done();
       });
     });
@@ -47,7 +49,7 @@ describe('rooms', function(){
     it('should emit a "new-room" event when an "open" event is received', function(done){
       
       // Assert
-      client_a.on('new-room', function(expected){
+      client_a.on('new-room', function(room, rooms){
         expect(true).toEqual(true);
         done();
       });
@@ -59,7 +61,7 @@ describe('rooms', function(){
     it('should pass the room id on to other users when an "open" event is received', function(done){
       
       // Assert
-      client_a.on('new-room', function(room){
+      client_a.on('new-room', function(room, rooms){
         expect(room).toEqual(expected);
         done();
       });
@@ -80,7 +82,7 @@ describe('rooms', function(){
       });
 
       // Arrange
-      var expected = [client_b.id];
+      var expected = [{id:client_b.id, users:[client_b.id]}];
 
       // Act
       client_b.emit('open');
@@ -269,6 +271,7 @@ describe('rooms', function(){
 
       // Act
       client_b.emit('open');
+      client_c.emit('open');
 
       client_a.on('new-room', function(room){
         client_a.emit('join', room);
