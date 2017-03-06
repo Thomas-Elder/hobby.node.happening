@@ -11,10 +11,12 @@ var events = function(server) {
     
     if (!includes.includes(users, socket.id))
       users.push({id:socket.id});
- 
-    io.emit('user-connected');
+
+    io.emit('user-connected', users);
 
     socket.on('disconnect', function(){
+      var index = users.findIndex(function(user){ return user.id === socket.id });
+      users.splice(index, 1);
 
       io.emit('user-disconnected');
     });
