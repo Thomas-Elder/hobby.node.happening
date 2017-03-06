@@ -20,7 +20,7 @@ describe('connection', function(){
 
   describe('connection', function(){
 
-    iit('should emit "connect" event back to this client on connection', function(done){           
+    it('should emit "connect" event back to this client on connection', function(done){           
       
       client_a = io_client(url, socketOptions);
 
@@ -42,7 +42,7 @@ describe('connection', function(){
       });
     });
 
-    iit('should emit "disconnect" event back to this client on disconnection', function(done){           
+    it('should emit "disconnect" event back to this client on disconnection', function(done){           
 
       client_a = io_client(url, socketOptions);
 
@@ -59,7 +59,7 @@ describe('connection', function(){
       });
     });
 
-    iit('should emit "user-connected" event to other clients on connection', function(done){    
+    it('should emit "user-connected" event to other clients on connection', function(done){    
       
       client_a = io_client(url, socketOptions);
       client_b = io_client(url, socketOptions);
@@ -86,7 +86,7 @@ describe('connection', function(){
       });
     });
 
-    iit('should emit "user-disconnected" event to other clients on disconnection', function(done){           
+    it('should emit "user-disconnected" event to other clients on disconnection', function(done){           
      
       client_a = io_client(url, socketOptions);
       client_b = io_client(url, socketOptions);

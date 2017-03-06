@@ -23,12 +23,20 @@ var events = function(server) {
 
     socket.on('login', function(name){
 
+      var index = users.findIndex(function(user){ return user.id === socket.id });
+      users[index].name = name;
+
       socket.broadcast.emit('new-login', name);
     });
 
     socket.on('logout', function(){
 
-      socket.broadcast.emit('new-logout');
+      var index = users.findIndex(function(user){ return user.id === socket.id });
+      var name = users[index].name;
+
+      delete users[index].name;
+
+      socket.broadcast.emit('new-logout', name);
     });
 
     socket.on('open', function(){
