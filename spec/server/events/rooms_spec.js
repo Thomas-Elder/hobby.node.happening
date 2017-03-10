@@ -16,6 +16,7 @@ describe('rooms', function(){
       };
   var client_a;
   var client_b;
+  var client_c;
 
   server = new Server();
   server.start();
@@ -28,19 +29,25 @@ describe('rooms', function(){
     client_c = io_client(url, socketOptions);
 
     client_a.on('connect', function(){      
-        client_b.on('connect', function(){
-
+      client_b.on('connect', function(){
+        client_c.on('connect', function(){
           client_a.emit('login', 'Tom');
           client_b.emit('login', 'Tim');
-          //client_c.emit('login', 'Tum');
+          client_c.emit('login', 'Tum');
           done();
+        })
       });
     });
   });
   
   afterEach(function(done){
+    client_a.emit('bail');
+    client_b.emit('bail');
+    client_c.emit('bail');
+
     client_a.disconnect(true);
     client_b.disconnect(true);
+    client_c.disconnect(true);
     done();
   });
 
@@ -82,7 +89,7 @@ describe('rooms', function(){
       });
 
       // Arrange
-      var expected = [{id:client_b.id, users:[client_b.id]}];
+      var expected = [{ id:client_b.id, users:[client_b.id] }];
 
       // Act
       client_b.emit('open');
@@ -97,7 +104,7 @@ describe('rooms', function(){
       });
 
       // Arrange
-      var expected = [client_b.id, client_a.id].sort();
+      var expected = [{id:client_b.id, users:[client_b.id]}, {id:client_a.id, users:[client_a.id]}];
 
       // Act
       client_b.emit('open');
@@ -122,7 +129,9 @@ describe('rooms', function(){
 
       // Act
       client_a.emit('open');
-      client_b.emit('join', client_a.id);
+      client_b.on('new-room', function(room){
+        client_b.emit('join', room);
+      });      
     });
 
     it('should pass the new users name on to other clients in the room when a "join" event is received', function(done){
@@ -138,8 +147,10 @@ describe('rooms', function(){
 
       // Act
       client_a.emit('open');
-      client_b.emit('join', client_a.id);
 
+      client_b.on('new-room', function(){
+        client_b.emit('join', client_a.id);
+      });
     });
 
     it('should maintain a list of the users in the room', function(done){
@@ -151,8 +162,8 @@ describe('rooms', function(){
       });
 
       // Arrange
-      var expected = [{id: client_b.id, name:'Tim', roomid:client_a.id}, {id: client_a.id, name:'Tom', roomid:client_a.id}];
-      expected.sort(function(a,b){return a.id > b.id});
+      var expected = [client_b.id, client_a.id];
+      expected.sort();
 
       // Act
       client_a.emit('open');
@@ -220,8 +231,8 @@ describe('rooms', function(){
       });
 
       // Arrange
-      var expected = [{id: client_a.id, name:'Tom', roomid:client_a.id}];
-      expected.sort(function(a,b){return a.id > b.id});
+      var expected = [client_a.id];
+      expected.sort();
 
       // Act
       client_a.emit('open');
@@ -235,51 +246,79 @@ describe('rooms', function(){
       }); 
     });
 
-    it('should emit a "room-closed" event when the bailing user is the "host"', function(done){
+    it('should emit a "room-closed" event when there are no users left in the room', function(done){
       
       // Assert
-      client_a.on('room-closed', function(rooms){
+      client_b.on('room-closed', function(room, rooms){
         expect(true).toEqual(true);
         done();
       });
-      
-      // Arrange
-      var expected = 'Tim';
-
-      // Act
-      client_b.emit('open');
 
       client_a.on('new-room', function(room){
         client_a.emit('join', room);
 
         client_b.on('user-joined', function(){
           client_b.emit('bail');
+
+          client_a.on('user-bailed', function(){
+            client_a.emit('bail')
+          });
         });
-      });      
+      });
+
+      client_b.emit('open');      
     });
 
-    it('should send a list of still open rooms when the bailing user is the "host"', function(done){
+    it('should send the room id along with the "room-closed" event', function(done){
       
       // Assert
-      client_a.on('room-closed', function(rooms){
-        expect(expected).toEqual(rooms);
+      client_b.on('room-closed', function(room, rooms){
+        expect(room).toEqual(expected);
+        done();
+      });
+
+      var expected = client_b.id;
+
+      client_a.on('new-room', function(room){
+        client_a.emit('join', room);
+
+        client_b.on('user-joined', function(){
+          client_b.emit('bail');
+
+          client_a.on('user-bailed', function(){
+            client_a.emit('bail')
+          });
+        });
+      });
+
+      client_b.emit('open');      
+    });
+
+    it('should send a list of still open rooms when a room closes', function(done){
+      
+      // Assert
+      client_a.on('room-closed', function(room, rooms){
+        expect(rooms).toEqual(expected);
         done();
       });
       
       // Arrange
-      var expected = "??????";
+      var expected = [{id:client_c.id, users:[client_c.id]}];
 
-      // Act
-      client_b.emit('open');
-      client_c.emit('open');
-
-      client_a.on('new-room', function(room){
+      client_c.on('new-room', function(room){
         client_a.emit('join', room);
 
         client_b.on('user-joined', function(){
           client_b.emit('bail');
+
+          client_a.on('user-bailed', function(){
+            client_a.emit('bail')
+          });
         });
-      });      
+      });
+
+      client_b.emit('open');
+      client_c.emit('open');      
     });
   }); 
 });

@@ -24,11 +24,11 @@ describe('chat', function(){
     client_a = io_client(url, socketOptions);
     client_b = io_client(url, socketOptions);
 
-    // Log connection
-    client_a.on('connect', function(){
-        
-        client_b.on('connect', function(){
-          done();
+    client_a.on('connect', function(){ 
+      client_b.on('connect', function(){
+        client_a.emit('login', 'Tom');
+        client_b.emit('login', 'Tim');
+        done();
       });
     });
 
@@ -45,6 +45,9 @@ describe('chat', function(){
   });
   
   afterEach(function(done){
+    client_a.emit('bail');
+    client_b.emit('bail');
+
     client_a.disconnect(true);
     client_b.disconnect(true);
     done();
@@ -60,20 +63,14 @@ describe('chat', function(){
         done();
       });
 
-      // Arrange
-      var expected = {};
-      expected.name = 'Tim';
-      expected.text = 'Oh shit son.';
-
-      // Act
-      client_a.emit('login', 'Tom');
-      client_b.emit('login', 'Tim');
-
       client_a.emit('open');
-      client_b.emit('join', client_a.id);
+      client_b.on('new-room', function(room){
+        client_b.emit('join', room);
 
-      client_b.emit('new-message', 'Oh shit son.');
-
+        client_a.on('user-joined', function(){
+          client_b.emit('new-message', 'Oh shit son.');
+        });
+      });
     });
 
     it('should forward the message sent to the other client', function(done){
@@ -84,20 +81,18 @@ describe('chat', function(){
         done();
       });
 
-            // Arrange
       var expected = {};
       expected.name = 'Tim';
       expected.text = 'Oh shit son.';
 
-      // Act
-      client_a.emit('login', 'Tom');
-      client_b.emit('login', 'Tim');
-
       client_a.emit('open');
-      client_b.emit('join', client_a.id);
+      client_b.on('new-room', function(room){
+        client_b.emit('join', room);
 
-      client_b.emit('new-message', 'Oh shit son.');
-
+        client_a.on('user-joined', function(){
+          client_b.emit('new-message', 'Oh shit son.');
+        });
+      });
     });
   });
 });

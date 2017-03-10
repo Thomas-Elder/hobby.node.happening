@@ -18,6 +18,13 @@ var events = function(server) {
       var index = users.findIndex(function(user){ return user.id === socket.id });
       users.splice(index, 1);
 
+      var roomIndex = rooms.findIndex(function(room){ return includes.includes(room.users, socket.id); });
+
+      if (roomIndex != -1){
+        var userIndex = rooms[roomIndex].users.findIndex(function(user){ return user === socket.id });
+        rooms[roomIndex].users.splice(userIndex, 1);
+      }
+
       io.emit('user-disconnected');
     });
 
@@ -41,24 +48,64 @@ var events = function(server) {
 
     socket.on('open', function(){
 
+      rooms.push({ id:socket.id, users: [socket.id] });
       socket.join(socket.id);
-      socket.broadcast.emit('new-room', socket.id);
+      socket.broadcast.emit('new-room', socket.id, rooms);
     });
 
     socket.on('join', function(id){
+      var roomIndex = rooms.findIndex(function(room){ return room.id === id });
+      rooms[roomIndex].users.push(socket.id);
+
+      var user = users.find(function(user){ return user.id === socket.id });
+      var usersInRoom = rooms[roomIndex].users;
+      usersInRoom.sort();
 
       socket.join(id);
-      socket.broadcast.to(id).emit('user-joined');
+      socket.broadcast.to(id).emit('user-joined', user.name, usersInRoom);
     });
 
     socket.on('bail', function(){
 
-      //socket.broadcast.to(id).emit('user-bailed');
+      for(room in rooms) {
+        if (room.users === undefined){
+          rooms.splice(roomIndex, 1);
+          io.emit('room-closed', id, rooms);
+        }
+      }
+     
+      var roomIndex = rooms.findIndex(function(room){ return includes.includes(room.users, socket.id); });
+
+      if (roomIndex != -1){
+        var userIndex = rooms[roomIndex].users.findIndex(function(user){ return user === socket.id });
+        var id = rooms[roomIndex].id;
+
+        var user = users.find(function(user){ return user.id === socket.id });
+
+        var usersInRoom = rooms[roomIndex].users;
+        usersInRoom.sort();
+
+        rooms[roomIndex].users.splice(userIndex, 1);
+
+        var usersInRoom = rooms[roomIndex].users;
+        usersInRoom.sort();
+
+        if (rooms[roomIndex].users.length > 0) {
+          socket.broadcast.to(id).emit('user-bailed', user.name, usersInRoom);
+        }
+      }
     });
   
     socket.on('new-message', function(text){
+      var roomIndex = rooms.findIndex(function(room){ return includes.includes(room.users, socket.id); });
+      var id = rooms[roomIndex].id;
+      var user = users.find(function(user){ return user.id === socket.id });
 
-      //socket.broadcast.to(id).emit('new-message', text);
+      var message = {};
+      message.name = user.name;
+      message.text = text;
+
+      socket.broadcast.to(id).emit('new-message', message);
     });
   });
 };
