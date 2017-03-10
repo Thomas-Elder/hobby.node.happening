@@ -45,8 +45,6 @@ describe('chat', function(){
   });
   
   afterEach(function(done){
-    client_a.emit('bail');
-    client_b.emit('bail');
 
     client_a.disconnect(true);
     client_b.disconnect(true);
