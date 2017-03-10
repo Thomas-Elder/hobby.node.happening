@@ -41,10 +41,10 @@ describe('rooms', function(){
   });
   
   afterEach(function(done){
-    client_a.emit('bail');
+    /*client_a.emit('bail');
     client_b.emit('bail');
     client_c.emit('bail');
-
+*/
     client_a.disconnect(true);
     client_b.disconnect(true);
     client_c.disconnect(true);
@@ -176,7 +176,7 @@ describe('rooms', function(){
 
   describe('bail', function(){
 
-    it('should emit a "user-bailed" event when a "bail" event is received', function(done){
+    iit('should emit a "user-bailed" event when a "bail" event is received', function(done){
       
       // Assert
       client_a.on('user-bailed', function(name){
@@ -199,7 +199,7 @@ describe('rooms', function(){
       }); 
     });
 
-    it('should pass the bailing users name on to other clients in the room when a "bail" event is received', function(done){
+    iit('should pass the bailing users name on to other clients in the room when a "bail" event is received', function(done){
       
       // Assert
       client_a.on('user-bailed', function(name){
@@ -222,7 +222,7 @@ describe('rooms', function(){
       }); 
     });
 
-    it('should maintain a list of the users in the room', function(done){
+    iit('should maintain a list of the users in the room', function(done){
       
       // Assert
       client_a.on('user-bailed', function(name, usersInRoom){
@@ -246,7 +246,7 @@ describe('rooms', function(){
       }); 
     });
 
-    it('should emit a "room-closed" event when there are no users left in the room', function(done){
+    iit('should emit a "room-closed" event when there are no users left in the room', function(done){
       
       // Assert
       client_b.on('room-closed', function(room, rooms){
@@ -269,7 +269,7 @@ describe('rooms', function(){
       client_b.emit('open');      
     });
 
-    it('should send the room id along with the "room-closed" event', function(done){
+    iit('should send the room id along with the "room-closed" event', function(done){
       
       // Assert
       client_b.on('room-closed', function(room, rooms){
@@ -294,7 +294,7 @@ describe('rooms', function(){
       client_b.emit('open');      
     });
 
-    it('should send a list of still open rooms when a room closes', function(done){
+    iit('should send a list of still open rooms when a room closes', function(done){
       
       // Assert
       client_a.on('room-closed', function(room, rooms){
@@ -316,9 +316,9 @@ describe('rooms', function(){
           });
         });
       });
-
-      client_b.emit('open');
-      client_c.emit('open');      
+      
+      client_c.emit('open');
+      client_b.emit('open');      
     });
   }); 
 });

@@ -54,6 +54,7 @@ var events = function(server) {
     });
 
     socket.on('join', function(id){
+
       var roomIndex = rooms.findIndex(function(room){ return room.id === id });
       rooms[roomIndex].users.push(socket.id);
 
@@ -67,15 +68,41 @@ var events = function(server) {
 
     socket.on('bail', function(){
 
-      for(room in rooms) {
-        if (room.users === undefined){
-          rooms.splice(roomIndex, 1);
-          io.emit('room-closed', id, rooms);
-        }
-      }
-     
+      console.log('user bailing:', socket.id);
+      
       var roomIndex = rooms.findIndex(function(room){ return includes.includes(room.users, socket.id); });
 
+      console.log('they are leaving room:', rooms[roomIndex]);
+      console.log();
+      console.log('list of rooms:', rooms);
+      console.log('roomIndex ===', roomIndex);
+      console.log('rooms[roomIndex]', rooms[roomIndex]);
+
+      if (rooms[roomIndex].users.length > 0) {
+        console.log('users length > 0');
+
+        // Find the user's index in the rooms user array
+        var userIndex = rooms[roomIndex].users.findIndex(function(user){ return user === socket.id });
+        var id = rooms[roomIndex].id;  
+
+        // Remove the user from the rooms' user array
+        rooms[roomIndex].users.splice(userIndex, 1);
+
+        // Tidy up room if necessary
+        if (rooms[roomIndex].users.length === 0) {
+          socket.broadcast.emit('room-closed', id, rooms);
+        } else { 
+
+          // Find the user in the user array
+          var user = users.find(function(user){ return user.id === socket.id });
+          var name = user.name;
+
+          socket.broadcast.to(id).emit('user-bailed', name, rooms[roomIndex].users);
+        }
+      }
+
+      
+      /*
       if (roomIndex != -1){
         var userIndex = rooms[roomIndex].users.findIndex(function(user){ return user === socket.id });
         var id = rooms[roomIndex].id;
@@ -89,11 +116,7 @@ var events = function(server) {
 
         var usersInRoom = rooms[roomIndex].users;
         usersInRoom.sort();
-
-        if (rooms[roomIndex].users.length > 0) {
-          socket.broadcast.to(id).emit('user-bailed', user.name, usersInRoom);
-        }
-      }
+      }*/
     });
   
     socket.on('new-message', function(text){
