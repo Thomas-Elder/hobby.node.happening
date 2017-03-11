@@ -29,9 +29,10 @@ var events = function(server) {
 
         // If they're the last user in the room, splice the room and emit 'room-closed' event
         if (rooms[roomIndex].users.length === 0) {
-
-          io.emit('room-closed', rooms[roomIndex].id, rooms);
+          var id = rooms[roomIndex].id;
+          
           rooms.splice(roomIndex, 1);
+          io.emit('room-closed', id, rooms);
         }
       }
 

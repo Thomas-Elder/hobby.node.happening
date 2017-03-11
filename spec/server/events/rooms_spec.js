@@ -302,7 +302,7 @@ describe('rooms', function(){
       client_b.emit('open');      
     });
 
-    it('should send a list of still open rooms when a room closes', function(done){
+    it('should send a list of still open rooms when a room closes due to users bailing', function(done){
       
       // Assert
       client_c.on('room-closed', function(room, rooms){
@@ -322,6 +322,35 @@ describe('rooms', function(){
           client_a.on('user-bailed', function(){
             client_a.emit('bail')
           });
+        });
+      });
+
+      client_b.emit('open'); 
+      client_c.emit('open');
+           
+    });
+
+    it('should send a list of still open rooms when a room closes due to users disconnecting', function(done){
+      
+      // Assert
+      client_c.on('room-closed', function(room, rooms){
+        expect(rooms).toEqual(expected);
+        done();
+      });
+      
+      // Arrange
+      var expected = [{id:client_c.id, users:[client_c.id]}];
+
+      client_c.on('new-room', function(room){
+        client_a.emit('join', room);
+
+        client_b.on('user-joined', function(){
+
+          client_a.on('user-disconnected', function(){
+            client_a.disconnect();
+          });
+
+          client_b.disconnect();
         });
       });
 
