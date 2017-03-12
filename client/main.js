@@ -53,11 +53,13 @@ window.onload = function(){
   });
 
   socket.on('new-room', function(id){
-    $('#rooms').append('<li>' + id + '<button id ="' + id + '">J O I N </button><li>');
+    $('#rooms').append('<li>' + id + '<button id ="' + id + '">J O I N </button></li>');
   });
 
   socket.on('room-closed', function(id){
-    // todo
+
+    console.log('room closed, room:', id);
+    $(id).parent().remove();
   });
 
   socket.on('new-message', function(message){

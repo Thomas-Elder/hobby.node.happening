@@ -254,7 +254,7 @@ describe('rooms', function(){
       }); 
     });
 
-    it('should emit a "room-closed" event when there are no users left in the room', function(done){
+    it('should emit a "room-closed" event to the user who opens the room when there are no users left in the room', function(done){
       
       // Assert
       client_b.on('room-closed', function(room, rooms){
@@ -277,10 +277,58 @@ describe('rooms', function(){
       client_b.emit('open');      
     });
 
-    it('should send the room id along with the "room-closed" event', function(done){
+    it('should emit a "room-closed" event to other users when there are no users left in the room', function(done){
+      
+      // Assert
+      client_a.on('room-closed', function(room, rooms){
+        expect(true).toEqual(true);
+        done();
+      });
+
+      client_a.on('new-room', function(room){
+        client_a.emit('join', room);
+
+        client_b.on('user-joined', function(){
+          client_b.emit('bail');
+
+          client_a.on('user-bailed', function(){
+            client_a.emit('bail')
+          });
+        });
+      });
+
+      client_b.emit('open');      
+    });
+
+    it('should send the room id along with the "room-closed" event to the user who opens the room', function(done){
       
       // Assert
       client_b.on('room-closed', function(room, rooms){
+        expect(room).toEqual(expected);
+        done();
+      });
+
+      var expected = client_b.id;
+
+      client_a.on('new-room', function(room){
+        client_a.emit('join', room);
+
+        client_b.on('user-joined', function(){
+          client_b.emit('bail');
+
+          client_a.on('user-bailed', function(){
+            client_a.emit('bail')
+          });
+        });
+      });
+
+      client_b.emit('open');      
+    });
+
+    it('should send the room id along with the "room-closed" event to other users', function(done){
+      
+      // Assert
+      client_a.on('room-closed', function(room, rooms){
         expect(room).toEqual(expected);
         done();
       });
