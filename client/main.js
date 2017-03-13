@@ -52,6 +52,13 @@ window.onload = function(){
     socket.emit('bail');
   });
 
+  socket.on('logged-in', function(rooms){
+
+    for(room in rooms){
+      $('#rooms').append('<li>' + room.id + '<button id ="' + room.id + '">J O I N </button></li>');
+    }
+  });
+
   socket.on('new-room', function(id){
     $('#rooms').append('<li>' + id + '<button id ="' + id + '">J O I N </button></li>');
   });
