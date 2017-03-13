@@ -44,6 +44,7 @@ var events = function(server) {
       var index = users.findIndex(function(user){ return user.id === socket.id });
       users[index].name = name;
 
+      socket.emit('logged-in', rooms);
       socket.broadcast.emit('new-login', name);
     });
 

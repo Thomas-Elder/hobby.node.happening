@@ -52,33 +52,43 @@ describe('account', function(){
 
   describe('login', function(){
     
-    it('should send a "new-login" event when a "login" event is received', function(done){
+    it('should send a "logged-in" event to the user who logged in when a "login" event is received', function(done){
 
-      // Assert
-      client_a.on('new-login', function(expected){
+      client_a.on('logged-in', function(data){
+        expect(data).toEqual(expected);
+        done();
+      });
+
+      var expected = [{id:client_b.id, users:[client_b.id]}];
+
+      client_b.emit('open');
+
+      client_a.on('new-room', function(){
+        client_a.emit('login', 'Tom');
+      });
+    });
+
+    it('should send a "new-login" event to other users when a "login" event is received', function(done){
+
+      client_a.on('new-login', function(data){
         expect(true).toEqual(true);
         done();
       });
 
-      // Arrange
       var expected = 'Tom';
 
-      // Act
       client_b.emit('login', 'Tom');
     });
 
     it('should pass the user details to other users when a "login" event is received', function(done){
 
-      // Assert
       client_a.on('new-login', function(data){
         expect(data).toEqual(expected);
         done();
       });
 
-      // Arrange
       var expected = 'Tom';
 
-      // Act
       client_b.emit('login', 'Tom');
     });
   });
@@ -87,32 +97,26 @@ describe('account', function(){
     
     it('should send a "new-logout" event when a "logout" event is received', function(done){
 
-      // Assert
-      client_a.on('new-logout', function(expected){
+      client_a.on('new-logout', function(data){
         expect(true).toEqual(true);
         done();
       });
 
-      // Arrange
       var expected = 'Tom';
 
-      // Act
       client_b.emit('login', 'Tom');
       client_b.emit('logout');
     });
 
     it('should pass the user details to other users when a "logout" event is received', function(done){
 
-      // Assert
       client_a.on('new-logout', function(data){
         expect(data).toEqual(expected);
         done();
       });
 
-      // Arrange
       var expected = 'Tom';
 
-      // Act
       client_b.emit('login', 'Tom');
       client_b.emit('logout');
     });
