@@ -60,15 +60,17 @@ describe('chat', function(){
         expect(true).toEqual(true);
         done();
       });
-
-      client_a.emit('open');
+    
       client_b.on('new-room', function(room){
-        client_b.emit('join', room);
-
+        
         client_a.on('user-joined', function(){
           client_b.emit('new-message', 'Oh shit son.');
         });
+
+        client_b.emit('join', room);
       });
+
+      client_a.emit('open');
     });
 
     it('should forward the message sent to the other client', function(done){
@@ -83,14 +85,17 @@ describe('chat', function(){
       expected.name = 'Tim';
       expected.text = 'Oh shit son.';
 
-      client_a.emit('open');
+      
       client_b.on('new-room', function(room){
-        client_b.emit('join', room);
 
         client_a.on('user-joined', function(){
           client_b.emit('new-message', 'Oh shit son.');
         });
+
+        client_b.emit('join', room);
       });
+
+      client_a.emit('open');
     });
   });
 });
