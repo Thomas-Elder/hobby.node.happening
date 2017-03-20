@@ -54,25 +54,23 @@ window.onload = function(){
 
   socket.on('logged-in', function(rooms){
 
-    console.log('rooms:', rooms);
-    console.log('rooms[0]:', rooms[0]);
-
     for(var i = 0; i < rooms.length; i++) {
       $('#rooms').append('<li>' + rooms[i].id + '<button id ="' + rooms[i].id + '">J O I N </button></li>');
     }
   });
 
   socket.on('new-room', function(id){
+    
     $('#rooms').append('<li>' + id + '<button id ="' + id + '">J O I N </button></li>');
   });
 
   socket.on('room-closed', function(id){
-
-    console.log('room closed, room:', id);
+    id = '#' + id;
     $(id).parent().remove();
   });
 
   socket.on('new-message', function(message){
+    
     $('#chat').append('<li>' + message.name + ":" + message.text + '</li>');
   });
 
