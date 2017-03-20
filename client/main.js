@@ -54,8 +54,11 @@ window.onload = function(){
 
   socket.on('logged-in', function(rooms){
 
-    for(room in rooms){
-      $('#rooms').append('<li>' + room.id + '<button id ="' + room.id + '">J O I N </button></li>');
+    console.log('rooms:', rooms);
+    console.log('rooms[0]:', rooms[0]);
+
+    for(var i = 0; i < rooms.length; i++) {
+      $('#rooms').append('<li>' + rooms[i].id + '<button id ="' + rooms[i].id + '">J O I N </button></li>');
     }
   });
 
