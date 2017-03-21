@@ -1,5 +1,0 @@
-todo.txt
-
-throw in a quick css, make sure the static serving works. 
-
-create a layout.pug for the pages.
