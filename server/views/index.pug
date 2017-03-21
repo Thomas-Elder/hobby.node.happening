@@ -9,20 +9,22 @@ html
     script(src="/socket.io/socket.io.js" type="text/javascript")
     script(src="http://code.jquery.com/jquery-1.11.1.js" type="text/javascript")
   body
-    h1 Hello World!
+    h1= title
 
     #login-section
+      h2 L O G I N
       input#name
       button#login L O G I N
 
     #browse-section
+      h2 R O O M S
       button#open O P E N
       ul#rooms
     
     #chat-section
+      h2 C H A T
       input#message
       button#send S E N D
       button#bail B A I L
 
       ul#chat
-        li any messages?
