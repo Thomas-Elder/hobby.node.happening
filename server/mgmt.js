@@ -11,7 +11,7 @@ var Mgmt = function(){
  * Returns an array of Room objects
  * @return {array} rooms
  */
-Mgmt.prototype.rooms = function(){
+Mgmt.prototype.Rooms = function(){
   return rooms;
 };
 
@@ -19,7 +19,7 @@ Mgmt.prototype.rooms = function(){
  * Returns an array of User objects
  * @return {array} users
  */
-Mgmt.prototype.users = function(){
+Mgmt.prototype.Users = function(){
   return users;
 };
 
@@ -27,10 +27,16 @@ Mgmt.prototype.users = function(){
  * Represents a user
  * @constructor
  * 
- * @param {string} id 
+ * @param {string} id
+ * @param {string=} name
+ * 
+ * @prop {string} id
+ * @prop {string} name
  */
-var User = function(id){
+var User = function(id, name){
   this.id = id;
+
+  name ? this.name = name : this.name = "None";
 };
 
 /**
@@ -40,11 +46,9 @@ var User = function(id){
  * @param {string} name
  * @return {string} name
  */
-User.prototype.name = function(name){
-
-  if(name === undefined)
-    this.name = name; 
+User.prototype.Name = function(name){
   
+  this.name = name;   
   return this.name;
 };
 
@@ -52,7 +56,12 @@ User.prototype.name = function(name){
  * Represents a room
  * @constructor
  * @param {string} id 
- * @param {User} creator 
+ * @param {User} creator
+ * 
+ * @prop {User} creator
+ * @prop {string} id
+ * @prop {array} users
+ * @prop {boolean} empty
  */
 var Room = function(id, creator){
   this.id = id;
@@ -67,23 +76,8 @@ var Room = function(id, creator){
  * Add the specified user to the room
  * @param {User} user
  */
-Room.prototype.add = function(user){
+Room.prototype.Add = function(user){
   this.users.add(user);
-
-  var min = this.users.reduce(function(prev, curr){
-    return prev.id < curr.id ? prev.id : curr.id;
-  });
-
-  console.log('min == ', min);
-
-  var min = entries.reduce(function(prev, curr){
-    return prev.quantity < curr.quantity ? prev.quantity : curr.quantity;
-  });
-
-  var max = entries.reduce(function(prev, curr){
-    return prev.quantity > curr.quantity ? prev.quantity : curr.quantity;
-  });
-
 
 };
 
@@ -91,7 +85,7 @@ Room.prototype.add = function(user){
  * Remove the specified user from the room
  * @param {string} user
  */
-Room.prototype.rm = function(user){ 
+Room.prototype.Rm = function(user){ 
   var index = this.users.findIndex(user);
   this.users.splice(index, 1);
 };
