@@ -69,6 +69,22 @@ var Room = function(id, creator){
  */
 Room.prototype.add = function(user){
   this.users.add(user);
+
+  var min = this.users.reduce(function(prev, curr){
+    return prev.id < curr.id ? prev.id : curr.id;
+  });
+
+  console.log('min == ', min);
+
+  var min = entries.reduce(function(prev, curr){
+    return prev.quantity < curr.quantity ? prev.quantity : curr.quantity;
+  });
+
+  var max = entries.reduce(function(prev, curr){
+    return prev.quantity > curr.quantity ? prev.quantity : curr.quantity;
+  });
+
+
 };
 
 /**
