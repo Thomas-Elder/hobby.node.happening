@@ -40,7 +40,7 @@ window.onload = function(){
     text = $('#message').val();
 
     $('#chat').append('<li>' + name + ":" + text + '</li>');
-
+    $('#message').val('');
     socket.emit('new-message', text);
   });
 
