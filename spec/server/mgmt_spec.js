@@ -46,8 +46,42 @@ describe('mgmt', function(){
 
   describe('room', function(){
 
-    it('should also do the thing', function(done){
+    iit('should maintain the properties of the room', function(done){
+      
+      var user = new mgmt.User('123', 'Tom');
+      var room = new mgmt.Room('456', user);
+      
+      expect(room.id).toEqual('456');
+      expect(room.creator).toEqual(user);
+      expect(room.users).toEqual([user]);
+      expect(room.empty).toEqual(false);
+      done();
+    });
 
+    iit('should add a user to the room.users array when Add() is called', function(done){
+      
+      var user = new mgmt.User('123', 'Tom');
+      var room = new mgmt.Room('456', user);
+      
+      var newUser = new mgmt.User('789', 'Tim');
+
+      room.Add(newUser);
+
+      expect(room.users).toEqual([user, newUser]);
+      done();
+    });
+
+    iit('should remove a user from the room.users array when Rm() is called', function(done){
+      
+      var user = new mgmt.User('123', 'Tom');
+      var room = new mgmt.Room('456', user);
+      
+      var newUser = new mgmt.User('789', 'Tim');
+
+      room.Add(newUser);
+      room.Rm(newUser);
+
+      expect(room.users).toEqual([user]);
       done();
     });
   });

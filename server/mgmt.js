@@ -9,7 +9,7 @@ var Mgmt = function(){
 
 /**
  * Returns an array of Room objects
- * @return {array} rooms
+ * @return {array} rooms - an array of Room objects
  */
 Mgmt.prototype.Rooms = function(){
   return rooms;
@@ -17,7 +17,7 @@ Mgmt.prototype.Rooms = function(){
 
 /**
  * Returns an array of User objects
- * @return {array} users
+ * @return {array} users - an array of User objects
  */
 Mgmt.prototype.Users = function(){
   return users;
@@ -27,11 +27,11 @@ Mgmt.prototype.Users = function(){
  * Represents a user
  * @constructor
  * 
- * @param {string} id
- * @param {string=} name
+ * @param {string} id - a unique identifier for the User
+ * @param {string=} name - optionally a name for the User
  * 
- * @prop {string} id
- * @prop {string} name
+ * @prop {string} id - a unique identifier for the User
+ * @prop {string} name - a name for the User
  */
 var User = function(id, name){
   this.id = id;
@@ -43,8 +43,8 @@ var User = function(id, name){
  * Takes a string to change the user's name. 
  * Returns the user's name. 
  * 
- * @param {string} name
- * @return {string} name
+ * @param {string} name - the new name for the User
+ * @return {string} name - the current name of the User (after change)
  */
 User.prototype.Name = function(name){
   
@@ -55,13 +55,13 @@ User.prototype.Name = function(name){
 /**
  * Represents a room
  * @constructor
- * @param {string} id 
- * @param {User} creator
+ * @param {string} id - a string representing the id of the room
+ * @param {User} creator - a User object representing the user who opened the room
  * 
- * @prop {User} creator
- * @prop {string} id
- * @prop {array} users
- * @prop {boolean} empty
+ * @prop {string} id - a string representing the id of the room
+ * @prop {User} creator - a User object representing the user who opened the room
+ * @prop {array} users - an array of User objects, the users currently in the room
+ * @prop {boolean} empty - a boolean whether the room's empty or not
  */
 var Room = function(id, creator){
   this.id = id;
@@ -77,8 +77,8 @@ var Room = function(id, creator){
  * @param {User} user
  */
 Room.prototype.Add = function(user){
-  this.users.add(user);
 
+  this.users.push(user);
 };
 
 /**
@@ -86,7 +86,11 @@ Room.prototype.Add = function(user){
  * @param {string} user
  */
 Room.prototype.Rm = function(user){ 
-  var index = this.users.findIndex(user);
+
+  var index = this.users.findIndex(function(u){
+    return u.id === user.id;
+  });
+
   this.users.splice(index, 1);
 };
 
