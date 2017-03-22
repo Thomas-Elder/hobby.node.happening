@@ -12,7 +12,7 @@ describe('mgmt', function(){
     done();
   });
 
-  describe('user', function(){
+  describe('User', function(){
 
     iit('should maintain the properties of the user', function(done){
      
@@ -44,7 +44,7 @@ describe('mgmt', function(){
     });
   });
 
-  describe('room', function(){
+  describe('Room', function(){
 
     iit('should maintain the properties of the room', function(done){
       
@@ -82,6 +82,29 @@ describe('mgmt', function(){
       room.Rm(newUser);
 
       expect(room.users).toEqual([user]);
+      done();
+    });
+  });
+
+  describe('Mgmt', function(){
+
+    iit('should maintain a sorted array of User objects', function(done){
+
+      var manager = new mgmt.Mgmt();
+
+      var user_a = new mgmt.User('123', 'Tom');
+      var user_b = new mgmt.User('456', 'Tim');
+      var user_c = new mgmt.User('789', 'Tum');
+
+      manager.AddUser(user_c);
+      manager.AddUser(user_b);
+      manager.AddUser(user_a);
+
+      var expected = [{id:'123', name:'Tom'}, 
+                      {id:'456', name:'Tim'}, 
+                      {id:'789', name:'Tum'}].sort(function(a, b){ return a.id > b.id });
+      
+      expect(manager.Users()).toEqual(expected);
       done();
     });
   });

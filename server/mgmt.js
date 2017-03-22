@@ -1,5 +1,11 @@
+/**
+ * Management module
+ * @module mgmt
+ */
+
 
 /**
+ * A class for handling the storage of User and Room objects.
  * @constructor
  */
 var Mgmt = function(){
@@ -12,7 +18,7 @@ var Mgmt = function(){
  * @return {array} rooms - an array of Room objects
  */
 Mgmt.prototype.Rooms = function(){
-  return rooms;
+  return this.rooms;
 };
 
 /**
@@ -20,7 +26,35 @@ Mgmt.prototype.Rooms = function(){
  * @return {array} users - an array of User objects
  */
 Mgmt.prototype.Users = function(){
-  return users;
+  return this.users;
+};
+
+/**
+ * 
+ * @param {Room} room - 
+ */
+Mgmt.prototype.AddRoom = function(room){
+
+};
+
+/**
+ * 
+ * @param {User} user - 
+ */
+Mgmt.prototype.AddUser = function(user){
+  this.users.push(user);
+  this.users.sort(function(a, b){
+    return a.id > b.id;
+  });
+};
+
+/**
+ * 
+ * @param {Room} room - 
+ * @param {User} user - 
+ */
+Mgmt.prototype.AddUserToRoom = function(room, user){
+
 };
 
 /**
