@@ -10,7 +10,7 @@ var includes = require('thombsaway-includes').includes;
  * A class for handling the storage of User and Room objects.
  * @constructor
  */
-var Mgmt = function(){
+var Manager = function(){
   this.rooms = [];
   this.users = [];
 };
@@ -20,7 +20,7 @@ var Mgmt = function(){
  * 
  * @return {array} rooms - an array of Room objects
  */
-Mgmt.prototype.Rooms = function(){
+Manager.prototype.Rooms = function(){
   return this.rooms;
 };
 
@@ -28,7 +28,7 @@ Mgmt.prototype.Rooms = function(){
  * Returns an array of User objects
  * @return {array} users - an array of User objects
  */
-Mgmt.prototype.Users = function(){
+Manager.prototype.Users = function(){
   return this.users;
 };
 
@@ -36,7 +36,7 @@ Mgmt.prototype.Users = function(){
  * 
  * @param {Room} room - 
  */
-Mgmt.prototype.AddRoom = function(room){
+Manager.prototype.AddRoom = function(room){
   this.rooms.push(room);
   this.rooms.sort(function(a, b){
     return a.id > b.id;
@@ -47,7 +47,7 @@ Mgmt.prototype.AddRoom = function(room){
  * 
  * @param {User} user - 
  */
-Mgmt.prototype.AddUser = function(user){
+Manager.prototype.AddUser = function(user){
   this.users.push(user);
   this.users.sort(function(a, b){
     return a.id > b.id;
@@ -59,7 +59,7 @@ Mgmt.prototype.AddUser = function(user){
  * @param {Room} room - 
  * @param {User} user - 
  */
-Mgmt.prototype.AddUserToRoom = function(room, user){
+Manager.prototype.AddUserToRoom = function(room, user){
 
 };
 
@@ -156,7 +156,7 @@ Room.prototype.Rm = function(user){
 };
 
 module.exports = {
-  Mgmt,
+  Manager,
   User,
   Room
 };

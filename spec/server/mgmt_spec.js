@@ -1,4 +1,4 @@
-var Mgmt = require('../../server/mgmt').Mgmt;
+var Manager = require('../../server/mgmt').Manager;
 var User = require('../../server/mgmt').User;
 var Room = require('../../server/mgmt').Room;
 
@@ -16,7 +16,7 @@ describe('Mgmt', function(){
 
   iit('should maintain a sorted array of User objects', function(done){
 
-    var manager = new Mgmt();
+    var manager = new Manager();
 
     var user_a = new User('123', 'Tom');
     var user_b = new User('456', 'Tim');
@@ -37,7 +37,7 @@ describe('Mgmt', function(){
 
   it('should maintain a sorted array of Room objects', function(done){
 
-    var manager = new Mgmt();
+    var manager = new Manager();
 
     var user_a = new User('147', 'Tom');
     var user_b = new User('258', 'Tim');
