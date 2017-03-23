@@ -37,7 +37,10 @@ Mgmt.prototype.Users = function(){
  * @param {Room} room - 
  */
 Mgmt.prototype.AddRoom = function(room){
-
+  this.rooms.push(room);
+  this.rooms.sort(function(a, b){
+    return a.id > b.id;
+  });
 };
 
 /**
