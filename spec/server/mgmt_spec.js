@@ -42,6 +42,24 @@ describe('mgmt', function(){
       expect(name).toEqual('Tom');
       done();
     });
+
+    iit('should return null to call to user.Room without a room parameter', function(done){
+      
+      var user = new mgmt.User('123');
+      var room = user.Room();
+
+      expect(room).toEqual(null); 
+      done();
+    });
+
+    it('should return the Room which the user has created', function(done){
+      
+      var user = new mgmt.User('123', 'Tom');
+      var room = new mgmt.Room('456', user);
+
+      expect(user.Room()).toEqual(room); 
+      done();
+    });
   });
 
   describe('room', function(){
