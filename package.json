@@ -4,8 +4,8 @@
   "description": "A site for creating and entering shortlived chat rooms",
   "main": "app.js",
   "scripts": {
-    "cover": "istanbul cover node_modules/jasmine-node/bin/jasmine-node -- ./spec",
-    "test": "jasmine-node --verbose --captureExceptions --forceexit ./spec"
+    "cover": "istanbul cover node_modules/jasmine/bin/jasmine",
+    "test": "jasmine"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
   "devDependencies": {
     "async": "^2.1.5",
     "istanbul": "^0.4.5",
-    "jasmine-node": "^1.14.5",
+    "jasmine": "^2.5.3",
     "request": "^2.79.0",
     "socket.io-client": "^1.7.3"
   },
