@@ -25,7 +25,7 @@ describe('Mgmt', function(){
    * 
    * Given that. I'm commenting these out for now, and I'll just continue as if
    * they pass (which they should ffs!!); 
-   *
+   */
   it('should maintain a sorted array of User objects', function(done){
 
     var manager = new Manager();
@@ -38,9 +38,9 @@ describe('Mgmt', function(){
     manager.AddUser(user_b);
     manager.AddUser(user_a);
 
-    var expected = [{id:'123', name:'Tom'}, 
-                    {id:'456', name:'Tim'}, 
-                    {id:'789', name:'Tum'}];
+    var expected = [user_a, 
+                    user_b, 
+                    user_c];
     var result = manager.users;
 
     expect(result).toEqual(expected);
@@ -63,15 +63,13 @@ describe('Mgmt', function(){
     manager.AddRoom(room_b);
     manager.AddRoom(room_a);
 
-    var expected = [{id:'123', creator: {id:'147', name:'Tom'}, users: [{id:'147', name:'Tom'}], empty: false}, 
-                    {id:'456', creator: {id:'258', name:'Tim'}, users: [{id:'258', name:'Tim'}], empty: false}, 
-                    {id:'789', creator: {id:'369', name:'Tum'}, users: [{id:'369', name:'Tum'}], empty: false}];
+    var expected = [room_a, room_b, room_c];
     var result = manager.rooms;
 
     expect(result).toEqual(expected);
     done();
   });
-  */
+  
 
   describe('User', function(){
 
