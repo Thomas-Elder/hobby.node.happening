@@ -33,8 +33,11 @@ Manager.prototype.Users = function(){
 };
 
 /**
+ * Adds a Room object to the list of rooms currently in the system.
  * 
- * @param {Room} room - 
+ * The list of Rooms is sorted by id.
+ * 
+ * @param {Room} room - the Room to be added
  */
 Manager.prototype.AddRoom = function(room){
   this.rooms.push(room);
@@ -44,8 +47,11 @@ Manager.prototype.AddRoom = function(room){
 };
 
 /**
+ * Adds a User object to the list of users currently online.
  * 
- * @param {User} user - 
+ * The list of Users is sorted by id.
+ * 
+ * @param {User} user - the User to be added
  */
 Manager.prototype.AddUser = function(user){
   this.users.push(user);
@@ -55,12 +61,22 @@ Manager.prototype.AddUser = function(user){
 };
 
 /**
+ * Adds a user to the specified room.
  * 
  * @param {Room} room - 
  * @param {User} user - 
+ * 
+ * @return {string} - returns the room id which the user is either already in, or now in.
  */
 Manager.prototype.AddUserToRoom = function(room, user){
 
+  if (user.roomId === null){
+    user.roomId = room.id;
+    room.Add(user);
+    return user.roomId;
+  } else {
+    return user.roomId;
+  }
 };
 
 /**
@@ -75,15 +91,16 @@ Manager.prototype.AddUserToRoom = function(room, user){
  */
 var User = function(id, name){
   this.id = id;
+  this.roomId = null;
 
   name ? this.name = name : this.name = "None";
 };
 
 /**
- * Takes a string to change the user's name. 
+ * Optionally takes a string to change the user's name. 
  * Returns the user's name. 
  * 
- * @param {string} name - the new name for the user.
+ * @param {string=} name - the new name for the user.
  * 
  * @return {string} the current name of the User (after change).
  */
@@ -91,20 +108,6 @@ User.prototype.Name = function(name){
   
   this.name = name;   
   return this.name;
-};
-
-/**
- * Optionally takes a room object to assign this user to it. 
- * Returns the room this user is in. Returns null if the user is not in a room.
- * 
- * @param {Room=} room - the room to which the user is being assigned.
- * @return {Room} - the room the user is currently in.
- */
-User.prototype.Room = function(room){
-
-  room ? this.room = room : this.room = null;
-
-  return this.room;
 };
 
 /**
@@ -127,7 +130,7 @@ var Room = function(id, creator){
   
   this.empty = false;
 
-  creator.Room(this);
+  creator.roomId = this.id;
 };
 
 /**
@@ -137,7 +140,6 @@ var Room = function(id, creator){
  */
 Room.prototype.Add = function(user){
 
-  user.Room(this);
   this.users.push(user);
 };
 

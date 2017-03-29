@@ -13,63 +13,150 @@ describe('Mgmt', function(){
 
     done();
   });
-
-  /**
-   * Unfortunately the following two tests are cooked for some reaosn. 
-   * They cause an error, which I've posted on stack overflow for: 
-   * http://stackoverflow.com/questions/42972419/jasmine-node-failing-a-passing-test-with-npm-error-code-elifecycle
-   * 
-   * Thing is even though they fail, they *should* pass. That is the test fail
-   * msg states expected x to equal y, but when I manually check x and y, they are 
-   * identical. 
-   * 
-   * Given that. I'm commenting these out for now, and I'll just continue as if
-   * they pass (which they should ffs!!); 
-   */
-  it('should maintain a sorted array of User objects', function(done){
-
-    var manager = new Manager();
-
-    var user_a = new User('123', 'Tom');
-    var user_b = new User('456', 'Tim');
-    var user_c = new User('789', 'Tum');
-
-    manager.AddUser(user_c);
-    manager.AddUser(user_b);
-    manager.AddUser(user_a);
-
-    var expected = [user_a, 
-                    user_b, 
-                    user_c];
-    var result = manager.users;
-
-    expect(result).toEqual(expected);
-    done();
-  });
-
-  it('should maintain a sorted array of Room objects', function(done){
-
-    var manager = new Manager();
-
-    var user_a = new User('147', 'Tom');
-    var user_b = new User('258', 'Tim');
-    var user_c = new User('369', 'Tum');
-
-    var room_a = new Room('123', user_a);
-    var room_b = new Room('456', user_b);
-    var room_c = new Room('789', user_c);
-
-    manager.AddRoom(room_c);
-    manager.AddRoom(room_b);
-    manager.AddRoom(room_a);
-
-    var expected = [room_a, room_b, room_c];
-    var result = manager.rooms;
-
-    expect(result).toEqual(expected);
-    done();
-  });
   
+  describe('sorting', function(){
+
+    it('should maintain a sorted array of User objects', function(done){
+
+      var manager = new Manager();
+
+      var user_a = new User('123', 'Tom');
+      var user_b = new User('456', 'Tim');
+      var user_c = new User('789', 'Tum');
+
+      manager.AddUser(user_c);
+      manager.AddUser(user_b);
+      manager.AddUser(user_a);
+
+      var expected = [user_a, user_b, user_c];
+      var result = manager.users;
+
+      expect(result).toEqual(expected);
+      done();
+    });
+
+    it('should maintain a sorted array of Room objects', function(done){
+
+      var manager = new Manager();
+
+      var user_a = new User('147', 'Tom');
+      var user_b = new User('258', 'Tim');
+      var user_c = new User('369', 'Tum');
+
+      var room_a = new Room('123', user_a);
+      var room_b = new Room('456', user_b);
+      var room_c = new Room('789', user_c);
+
+      manager.AddRoom(room_c);
+      manager.AddRoom(room_b);
+      manager.AddRoom(room_a);
+
+      var expected = [room_a, room_b, room_c];
+      var result = manager.rooms;
+
+      expect(result).toEqual(expected);
+      done();
+    });
+  });
+
+  describe('addUserToRoom', function(){
+
+    it('should add users to specifed rooms', function(done){
+
+      var manager = new Manager();
+
+      var user_a = new User('147', 'Tom');
+      var user_b = new User('258', 'Tim');
+      var user_c = new User('369', 'Tum');
+
+      var room_a = new Room('123', user_a);
+      var room_b = new Room('789', user_c);
+
+      manager.AddUser(user_c);
+      manager.AddUser(user_b);
+      manager.AddUser(user_a);
+
+      manager.AddRoom(room_b);
+      manager.AddRoom(room_a);
+
+      manager.AddUserToRoom(room_a, user_b);
+
+      var expected_a = [user_a, user_b];
+      var expected_b = [user_c];
+
+      var result_a = room_a.users;
+      var result_b = room_b.users;
+
+      expect(result_a).toEqual(expected_a);
+      expect(result_b).toEqual(expected_b);
+      done();
+    });
+
+    it('should not add users to specifed rooms if they\'re already assigned to a room', function(done){
+
+      var manager = new Manager();
+
+      var user_a = new User('147', 'Tom');
+      var user_b = new User('258', 'Tim');
+      var user_c = new User('369', 'Tum');
+
+      var room_a = new Room('123', user_a);
+      var room_b = new Room('789', user_c);
+
+      manager.AddUser(user_c);
+      manager.AddUser(user_b);
+      manager.AddUser(user_a);
+
+      manager.AddRoom(room_b);
+      manager.AddRoom(room_a);
+
+      manager.AddUserToRoom(room_a, user_b);
+      manager.AddUserToRoom(room_a, user_c);
+
+      var expected_a = [user_a, user_b];
+      var expected_b = [user_c];
+
+      var result_a = room_a.users;
+      var result_b = room_b.users;
+
+      expect(result_a).toEqual(expected_a);
+      expect(result_b).toEqual(expected_b);
+      done();
+    });
+  });
+
+  describe('RmUser', function(){
+    it('should rm users from specifed rooms', function(done){
+
+      var manager = new Manager();
+
+      var user_a = new User('147', 'Tom');
+      var user_b = new User('258', 'Tim');
+      var user_c = new User('369', 'Tum');
+
+      var room_a = new Room('123', user_a);
+      var room_b = new Room('789', user_c);
+
+      manager.AddUser(user_c);
+      manager.AddUser(user_b);
+      manager.AddUser(user_a);
+
+      manager.AddRoom(room_b);
+      manager.AddRoom(room_a);
+
+      manager.AddUserToRoom(room_a, user_b);
+
+      var expected_a = [user_a, user_b];
+      var expected_b = [user_c];
+
+      var result_a = room_a.users;
+      var result_b = room_b.users;
+
+      expect(result_a).toEqual(expected_a);
+      expect(result_b).toEqual(expected_b);
+      done();
+    });
+  });
 
   describe('User', function(){
 
@@ -102,21 +189,21 @@ describe('Mgmt', function(){
       done();
     });
 
-    it('should return null to call to user.Room without a room parameter', function(done){
+    it('should return null as the property user.roomId when a room hasn\'t been set', function(done){
       
       var user = new User('123');
-      var room = user.Room();
+      var result = user.roomId;
 
-      expect(room).toEqual(null); 
+      expect(result).toEqual(null); 
       done();
     });
 
-    it('should return the Room which the user has created', function(done){
+    it('should return the room id of the room the user has created', function(done){
       
       var user = new User('123', 'Tom');
       var room = new Room('456', user);
 
-      expect(user.room).toEqual(room); 
+      expect(user.roomId).toEqual(room.id); 
       done();
     });
   });
